@@ -1,0 +1,52 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+.build/
+.vercel_build_output/
+
+# Sanity Studio
+studio/dist/
+studio/.cache/
+.sanity/
+sanity.json.local
+
+# Environment
+.env
+.env.*.local
+.env.local
+!.env.example
+
+# Build / coverage / caches
+dist/
+build/
+coverage/
+.cache/
+.lock-wscript
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+
+# Misc
+uploads/
+public/static/
+.env.local.*.backup
+
+# Optional: lockfiles (uncomment if you use a lockfile manager you don't want committed)
+# pnpm-lock.yaml
+# package-lock.json
+# yarn.lock
