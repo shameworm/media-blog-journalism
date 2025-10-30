@@ -41,7 +41,7 @@ export default function Header() {
         </nav>
 
         <Button asChild size="sm" className="hidden rounded-full bg-slate-900 px-4 text-white hover:bg-slate-700 md:inline-flex">
-          <Link href="#about-project">Про проєкт</Link>
+          <Link href="/about">Про проєкт</Link>
         </Button>
       </div>
     </header>

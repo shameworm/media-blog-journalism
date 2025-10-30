@@ -8,7 +8,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {urlForImage} from '@/lib/sanityImage'
 import {formatDate} from '@/lib/utils'
 import {client} from '@/sanity/client'
-import {HOMEPAGE_QUERY, STATS_QUERY, TEAM_MEMBERS_QUERY} from '@/sanity/queries'
+import {HOMEPAGE_QUERY, STATS_QUERY} from '@/sanity/queries'
 
 interface SanitySlug {
   current: string
@@ -50,40 +50,22 @@ interface StatsData {
   publishedProjects: number
 }
 
-interface TeamMember {
-  _id: string
-  fullName: string
-  role?: string
-}
-
 const options = {next: {revalidate: 60}}
 
 export default async function IndexPage() {
-  const [featured, stats, team] = await Promise.all([
+  const [featured, stats] = await Promise.all([
     client.fetch<HomepageData>(HOMEPAGE_QUERY, {}, options),
     client.fetch<StatsData>(STATS_QUERY, {}, options),
-    client.fetch<TeamMember[]>(TEAM_MEMBERS_QUERY, {}, options),
   ])
 
   const featuredBiographies = featured?.featuredBiographies ?? []
   const recentReflections = featured?.recentReflections ?? []
   const featuredProjects = featured?.featuredProjects ?? []
-  const teamMembers = team ?? []
 
   const heroImageUrl = urlForImage(featuredBiographies.at(0)?.photo)
     ?.width(1600)
     .height(900)
     .quality(90)
-    .url()
-  const secondaryImageUrl = urlForImage(featuredBiographies.at(1)?.photo)
-    ?.width(640)
-    .height(480)
-    .fit('crop')
-    .url()
-  const tertiaryImageUrl = urlForImage(featuredBiographies.at(2)?.photo)
-    ?.width(640)
-    .height(480)
-    .fit('crop')
     .url()
 
   const statCards = [
@@ -235,65 +217,6 @@ export default async function IndexPage() {
                       <CardContent className="text-center text-sm text-white/65">{item.description}</CardContent>
                     </Card>
                   ))}
-                </div>
-              </div>
-
-              <div className="hidden gap-4 md:grid">
-                <div className="grid gap-4">
-                  <div className="relative col-span-2 h-56 overflow-hidden rounded-3xl border border-white/15 bg-white/10 backdrop-blur">
-                    {(heroImageUrl || secondaryImageUrl) ? (
-                      <Image
-                        src={heroImageUrl ?? (secondaryImageUrl as string)}
-                        alt="Робота журналістів"
-                        fill
-                        className="object-cover"
-                        sizes="(min-width: 1024px) 400px, 50vw"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-white/60">
-                        Зображення буде доступне згодом
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="relative h-44 overflow-hidden rounded-3xl border border-white/15 bg-white/10 backdrop-blur">
-                      {(secondaryImageUrl || tertiaryImageUrl) ? (
-                        <Image
-                          src={(secondaryImageUrl ?? tertiaryImageUrl) as string}
-                          alt="Студентські зйомки"
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 1024px) 200px, 40vw"
-                        />
-                      ) : (
-                        <Image
-                          src="/images/collage-main.png"
-                          alt="Автори проєкту"
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 1024px) 200px, 40vw"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-900/60" />
-                    </div>
-
-                    <div className="relative h-44 overflow-hidden rounded-3xl border border-white/15 bg-white/10 backdrop-blur">
-                      <Image
-                        src="/images/collage-hero.png"
-                        alt="Журналіст у полі"
-                        fill
-                        className="object-cover"
-                        sizes="(min-width: 1024px) 200px, 40vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/30 via-transparent to-transparent" />
-                    </div>
-                  </div>
-
-                  <div className="flex h-44 items-center justify-center rounded-3xl border border-white/15 bg-white/5 px-6 py-5 text-white">
-                    <Image src="/images/logo.svg" alt="Спеціальність Журналістика" width={96} height={96} />
-                  </div>
                 </div>
               </div>
             </div>
@@ -575,52 +498,21 @@ export default async function IndexPage() {
           </div>
         </section>
 
-        <section id="about-project" className="bg-slate-950 py-20 text-white">
+        <section className="bg-slate-950 py-20 text-white">
           <div className="container mx-auto px-4">
-            <div className="grid gap-10 md:grid-cols-[1.1fr_0.9fr]">
-              <div className="space-y-6">
-                <h2 className="text-3xl font-semibold md:text-4xl">Про проєкт</h2>
-                <p className="text-base text-white/70">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi
-                  tristique senectus et netus et malesuada fames ac turpis egestas. Sed euismod, urna
-                  non tempus commodo, lorem nulla facilisis neque, vitae tempus sapien ipsum vitae sem.
-                </p>
-                <p className="text-base text-white/70">
-                  Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac
-                  diam sit amet quam vehicula elementum sed sit amet dui. Cras ultricies ligula sed
-                  magna dictum porta.
-                </p>
-              </div>
-              <div className="rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur">
-                <h3 className="text-xl font-semibold">Команда</h3>
-                <p className="mt-2 text-sm text-white/70">
-                  Студенти, викладачі та редактори, які щодня працюють над новим контентом.
-                </p>
-                <div className="mt-6 space-y-4">
-                  {teamMembers.slice(0, 6).map((member) => (
-                    <div
-                      key={member._id}
-                      className="flex items-center gap-4 rounded-2xl border border-white/20 bg-white/5 p-4"
-                    >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/30 text-sm font-semibold text-white">
-                        {member.fullName
-                          .split(' ')
-                          .map((part) => part[0])
-                          .join('')
-                          .slice(0, 2)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-white">{member.fullName}</p>
-                        {member.role && <p className="text-xs text-white/60">{member.role}</p>}
-                      </div>
-                    </div>
-                  ))}
-                  {teamMembers.length === 0 && (
-                    <p className="text-sm text-white/70">
-                      Дані про команду з&apos;являться після публікації учасників у Sanity Studio.
-                    </p>
-                  )}
-                </div>
+            <div className="mx-auto max-w-4xl text-center">
+              <h2 className="text-3xl font-semibold md:text-4xl">Дізнайтеся більше про проєкт</h2>
+              <p className="mt-4 text-lg text-white/70">
+                Познайомтесь з нашою командою, місією та цілями, що рухають цей проєкт вперед.
+              </p>
+              <div className="mt-8">
+                <Button
+                  asChild
+                  size="lg"
+                  className="rounded-full bg-blue-500 px-8 font-semibold text-white hover:bg-blue-400"
+                >
+                  <Link href="/about">Про проєкт</Link>
+                </Button>
               </div>
             </div>
           </div>

@@ -182,138 +182,149 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
       </section>
 
       <section className="container mx-auto px-4 py-16">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
-          <div className="space-y-12">
-            {biography.biography ? (
-              <PortableText value={biography.biography} components={portableTextComponents} />
-            ) : (
-              <p className="rounded-2xl border border-slate-200 bg-white p-8 text-lg text-slate-600 shadow-sm">
-                Повна біографія готується до публікації.
-              </p>
-            )}
-
-            {biography.education && biography.education.length > 0 && (
-              <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
-                <h2 className="text-2xl font-semibold">Освіта</h2>
-                <Separator className="my-4" />
-                <ul className="space-y-4">
-                  {biography.education.map((item, index) => (
-                    <li key={index} className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
-                      <p className="text-lg font-semibold text-slate-900">{item.institution}</p>
-                      {item.degree && <p className="text-sm text-slate-600">{item.degree}</p>}
-                      {item.year && <p className="text-xs uppercase text-blue-500">{item.year}</p>}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {biography.workplaces && biography.workplaces.length > 0 && (
-              <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
-                <h2 className="text-2xl font-semibold">Професійний шлях</h2>
-                <Separator className="my-4" />
-                <div className="space-y-5">
-                  {biography.workplaces.map((place, index) => (
-                    <div key={index} className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
-                      <p className="text-lg font-semibold text-slate-900">{place.organization}</p>
-                      {place.position && (
-                        <p className="text-sm text-slate-600">{place.position}</p>
-                      )}
-                      {place.period && (
-                        <p className="text-xs uppercase tracking-wide text-blue-500">{place.period}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {biography.awards && biography.awards.length > 0 && (
-              <section className="rounded-3xl border border-amber-100 bg-amber-50 p-8 shadow-lg">
-                <h2 className="text-2xl font-semibold text-amber-900">Визнання та нагороди</h2>
-                <Separator className="my-4 bg-amber-200" />
-                <div className="grid gap-4 md:grid-cols-2">
-                  {biography.awards.map((award, index) => (
-                    <Card key={index} className="border-amber-100 bg-white/70 shadow-sm">
-                      <CardHeader>
-                        <CardTitle className="text-lg text-amber-900">{award.title}</CardTitle>
-                        {award.year && (
-                          <p className="text-xs uppercase text-amber-600">{award.year}</p>
-                        )}
-                      </CardHeader>
-                      {award.description && (
-                        <CardContent className="text-sm text-amber-800">
-                          {award.description}
-                        </CardContent>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-              </section>
-            )}
+        <div className="space-y-12">
+          {/* Key Facts Section - Image on left, facts on right */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
+            <h2 className="mb-6 text-2xl font-bold text-slate-900">Ключові факти</h2>
+            <div className="flex flex-col gap-8 md:flex-row md:items-start">
+              <div className="h-64 w-full flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-md md:h-80 md:w-80">
+                {biography.photo ? (
+                  <Image
+                    src={
+                      urlForImage(biography.photo)?.width(400).height(400).fit('crop').url() ||
+                      '/images/collage-hero.png'
+                    }
+                    alt={biography.fullName}
+                    width={400}
+                    height={400}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-sm font-semibold text-slate-500">
+                    Немає фото
+                  </div>
+                )}
+              </div>
+              <dl className="grid flex-1 gap-5 md:grid-cols-2">
+                {keyFacts.map((fact) => (
+                  <div key={fact.label} className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+                    <dt className="mb-2 text-xs font-bold uppercase tracking-wide text-blue-600">{fact.label}</dt>
+                    <dd className="text-lg font-semibold text-slate-900">{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
 
-          <aside className="space-y-8">
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
-              <h2 className="text-xl font-semibold text-slate-900">Ключові факти</h2>
-              <Separator className="my-4" />
-              <div className="flex flex-col gap-6 md:flex-row md:items-start">
-                <div className="mx-auto h-32 w-32 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 md:mx-0">
-                  {biography.photo ? (
-                    <Image
-                      src={
-                        urlForImage(biography.photo)?.width(320).height(320).fit('crop').url() ||
-                        '/images/collage-hero.png'
-                      }
-                      alt={biography.fullName}
-                      width={320}
-                      height={320}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-sm font-semibold text-slate-500">
-                      Немає фото
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
+            <div className="space-y-8">
+              {/* Education and Professional Path together */}
+              <div className="grid gap-8 md:grid-cols-2">
+                {biography.education && biography.education.length > 0 && (
+                  <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                    <h2 className="text-xl font-semibold">Освіта</h2>
+                    <Separator className="my-4" />
+                    <ul className="space-y-4">
+                      {biography.education.map((item, index) => (
+                        <li key={index} className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
+                          <p className="text-base font-semibold text-slate-900">{item.institution}</p>
+                          {item.degree && <p className="text-sm text-slate-600">{item.degree}</p>}
+                          {item.year && <p className="text-xs uppercase text-blue-500">{item.year}</p>}
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+
+                {biography.workplaces && biography.workplaces.length > 0 && (
+                  <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
+                    <h2 className="text-xl font-semibold">Професійний шлях</h2>
+                    <Separator className="my-4" />
+                    <div className="space-y-4">
+                      {biography.workplaces.map((place, index) => (
+                        <div key={index} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                          <p className="text-base font-semibold text-slate-900">{place.organization}</p>
+                          {place.position && (
+                            <p className="text-sm text-slate-600">{place.position}</p>
+                          )}
+                          {place.period && (
+                            <p className="text-xs uppercase tracking-wide text-blue-500">{place.period}</p>
+                          )}
+                        </div>
+                      ))}
                     </div>
+                  </section>
+                )}
+              </div>
+
+              {/* Main Biography Text */}
+              <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
+                <h2 className="mb-6 text-2xl font-semibold">Біографія</h2>
+                <div className="prose prose-slate max-w-none">
+                  {biography.biography ? (
+                    <PortableText value={biography.biography} components={portableTextComponents} />
+                  ) : (
+                    <p className="text-lg text-slate-600">
+                      Повна біографія готується до публікації.
+                    </p>
                   )}
                 </div>
-                <dl className="flex-1 space-y-4 text-sm text-slate-600">
-                  {keyFacts.map((fact) => (
-                    <div key={fact.label}>
-                      <dt className="font-semibold text-slate-500">{fact.label}</dt>
-                      <dd className="text-base text-slate-800">{fact.value}</dd>
-                    </div>
-                  ))}
-                </dl>
               </div>
+
+              {biography.awards && biography.awards.length > 0 && (
+                <section className="rounded-3xl border border-amber-100 bg-amber-50 p-8 shadow-lg">
+                  <h2 className="text-2xl font-semibold text-amber-900">Визнання та нагороди</h2>
+                  <Separator className="my-4 bg-amber-200" />
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {biography.awards.map((award, index) => (
+                      <Card key={index} className="border-amber-100 bg-white/70 shadow-sm">
+                        <CardHeader>
+                          <CardTitle className="text-lg text-amber-900">{award.title}</CardTitle>
+                          {award.year && (
+                            <p className="text-xs uppercase text-amber-600">{award.year}</p>
+                          )}
+                        </CardHeader>
+                        {award.description && (
+                          <CardContent className="text-sm text-amber-800">
+                            {award.description}
+                          </CardContent>
+                        )}
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
 
-            {biography.relatedReflections && biography.relatedReflections.length > 0 && (
-              <div className="rounded-3xl border border-blue-100 bg-blue-50/70 p-8 shadow-lg">
-                <h2 className="text-xl font-semibold text-slate-900">Рефлексії студентів</h2>
-                <Separator className="my-4 bg-blue-200" />
-                <div className="space-y-4">
-                  {biography.relatedReflections.map((reflection) => (
-                    <Link
-                      key={reflection._id}
-                      href={`/reflections/${reflection.slug.current}`}
-                      className="block rounded-2xl border border-blue-100 bg-white/80 p-4 text-sm text-slate-700 transition hover:border-blue-200 hover:bg-white"
-                    >
-                      <p className="font-semibold text-slate-900">{reflection.title}</p>
-                      <p className="mt-1 text-xs uppercase text-blue-500">{reflection.studentName}</p>
-                    </Link>
-                  ))}
+            <aside className="space-y-8">
+              {biography.relatedReflections && biography.relatedReflections.length > 0 && (
+                <div className="rounded-3xl border border-blue-100 bg-blue-50/70 p-8 shadow-lg">
+                  <h2 className="text-xl font-semibold text-slate-900">Рефлексії студентів</h2>
+                  <Separator className="my-4 bg-blue-200" />
+                  <div className="space-y-4">
+                    {biography.relatedReflections.map((reflection) => (
+                      <Link
+                        key={reflection._id}
+                        href={`/reflections/${reflection.slug.current}`}
+                        className="block rounded-2xl border border-blue-100 bg-white/80 p-4 text-sm text-slate-700 transition hover:border-blue-200 hover:bg-white"
+                      >
+                        <p className="font-semibold text-slate-900">{reflection.title}</p>
+                        <p className="mt-1 text-xs uppercase text-blue-500">{reflection.studentName}</p>
+                      </Link>
+                    ))}
+                  </div>
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="ghost"
+                    className="mt-5 text-blue-600 hover:bg-blue-100"
+                  >
+                    <Link href="/reflections">Усі рефлексії</Link>
+                  </Button>
                 </div>
-                <Button
-                  asChild
-                  size="sm"
-                  variant="ghost"
-                  className="mt-5 text-blue-600 hover:bg-blue-100"
-                >
-                  <Link href="/reflections">Усі рефлексії</Link>
-                </Button>
-              </div>
-            )}
-          </aside>
+              )}
+            </aside>
+          </div>
         </div>
       </section>
     </article>

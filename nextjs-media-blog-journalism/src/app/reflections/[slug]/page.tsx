@@ -143,21 +143,9 @@ export default async function ReflectionPage({params}: {params: Promise<{slug: s
       </section>
 
       <section className="container mx-auto px-4 py-16">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
-          <div className="space-y-12">
-            <PortableText value={reflection.essay} components={portableTextComponents} />
-
-            <div className="pt-8">
-              <Link
-                href="/reflections"
-                className="text-sm font-medium text-rose-600 hover:underline"
-              >
-                ← Повернутися до всіх рефлексій
-              </Link>
-            </div>
-          </div>
-
-          <aside className="space-y-8">
+        <div className="space-y-12">
+          {/* Author and Related Biography Info at Top */}
+          <div className="grid gap-8 md:grid-cols-2">
             <Card className="border-rose-100 bg-rose-50/70 shadow-lg">
               <CardHeader>
                 <CardDescription className="uppercase tracking-wide text-rose-500">
@@ -175,7 +163,7 @@ export default async function ReflectionPage({params}: {params: Promise<{slug: s
                       alt={reflection.relatedBiography?.fullName ?? ''}
                       fill
                       className="object-cover"
-                      sizes="(min-width: 1280px) 340px, 100vw"
+                      sizes="(min-width: 1280px) 400px, 100vw"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-slate-500">
@@ -234,7 +222,24 @@ export default async function ReflectionPage({params}: {params: Promise<{slug: s
                 )}
               </CardContent>
             </Card>
-          </aside>
+          </div>
+
+          {/* Main Essay Content */}
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
+            <h2 className="mb-6 text-2xl font-semibold">Рефлексія</h2>
+            <div className="prose prose-slate max-w-none">
+              <PortableText value={reflection.essay} components={portableTextComponents} />
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-slate-200">
+              <Link
+                href="/reflections"
+                className="text-sm font-medium text-rose-600 hover:underline"
+              >
+                ← Повернутися до всіх рефлексій
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </article>
