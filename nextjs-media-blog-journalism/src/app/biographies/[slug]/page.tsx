@@ -80,7 +80,8 @@ export async function generateStaticParams() {
 
 export const dynamicParams = true
 
-export default async function BiographyPage({params}: {params: {slug: string}}) {
+export default async function BiographyPage(props: {params: Promise<{slug: string}>}) {
+  const params = await props.params
   const biography = await client.fetch(BIOGRAPHY_QUERY, {slug: params.slug})
 
   if (!biography) {

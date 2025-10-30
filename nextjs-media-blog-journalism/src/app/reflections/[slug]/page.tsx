@@ -68,7 +68,8 @@ export async function generateStaticParams() {
 
 export const dynamicParams = true
 
-export default async function ReflectionPage({params}: {params: {slug: string}}) {
+export default async function ReflectionPage(props: {params: Promise<{slug: string}>}) {
+  const params = await props.params
   const reflection = await client.fetch(REFLECTION_QUERY, {slug: params.slug})
 
   if (!reflection) {

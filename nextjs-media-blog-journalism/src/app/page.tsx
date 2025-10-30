@@ -1,8 +1,20 @@
 import Link from "next/link";
+import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
+import imageUrlBuilder from '@sanity/image-url'
 
 import { client } from "@/sanity/client";
 import { HOMEPAGE_QUERY } from "@/sanity/queries";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+const builder = imageUrlBuilder(client)
+
+function urlFor(source: any) {
+  return builder.image(source)
+}
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -16,83 +28,99 @@ export default async function IndexPage() {
   const featured = await client.fetch(HOMEPAGE_QUERY, {}, options);
 
   return (
-    <main className="container mx-auto min-h-screen p-8">
-      {/* Hero Section */}
-      <section className="mb-12 text-center">
-        <h1 className="text-5xl font-bold mb-4">Медіа Блог Журналістика</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Біографії українських журналістів, студентські рефлексії та великі журналістські проекти
-        </p>
-      </section>
-
-      {/* Navigation Cards */}
-      <section className="grid md:grid-cols-3 gap-6 mb-12">
-        <Link href="/biographies" className="block p-6 border rounded-lg hover:shadow-lg transition-shadow bg-blue-50">
-          <h2 className="text-2xl font-bold mb-2">👤 Біографії</h2>
-          <p className="text-gray-700">Життя та творчість українських журналістів</p>
-        </Link>
-        <Link href="/reflections" className="block p-6 border rounded-lg hover:shadow-lg transition-shadow bg-green-50">
-          <h2 className="text-2xl font-bold mb-2">📖 Рефлексії</h2>
-          <p className="text-gray-700">Студентські есе про журналістів</p>
-        </Link>
-        <Link href="/projects" className="block p-6 border rounded-lg hover:shadow-lg transition-shadow bg-purple-50">
-          <h2 className="text-2xl font-bold mb-2">🚀 Великі Проекти</h2>
-          <p className="text-gray-700">Колективні журналістські роботи</p>
-        </Link>
-      </section>
-
-      {/* Featured Biographies */}
-      {featured.featuredBiographies && featured.featuredBiographies.length > 0 && (
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">Нові Біографії</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {featured.featuredBiographies.map((bio: any) => (
-              <Link key={bio._id} href={`/biographies/${bio.slug.current}`} className="block border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-bold text-lg mb-2">{bio.fullName}</h3>
-                {bio.birthDate && (
-                  <p className="text-sm text-gray-600">
-                    {new Date(bio.birthDate).getFullYear()}{bio.deathDate && ` - ${new Date(bio.deathDate).getFullYear()}`}
-                  </p>
-                )}
-              </Link>
-            ))}
+    <>
+      <Header />
+      <main className="min-h-screen bg-gray-50">
+        {/* Hero Section - Мінімалістичний дизайн */}
+        <section className="bg-white py-20 md:py-32">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+              Спеціальність<br />
+              "Журналістика"
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-xl">
+              Майбутнє, що говорить голосами минулого
+            </p>
           </div>
         </section>
-      )}
 
-      {/* Recent Reflections */}
-      {featured.recentReflections && featured.recentReflections.length > 0 && (
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">Останні Рефлексії</h2>
-          <div className="space-y-4">
-            {featured.recentReflections.map((reflection: any) => (
-              <Link key={reflection._id} href={`/reflections/${reflection.slug.current}`} className="block border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-bold text-lg">{reflection.title}</h3>
-                <p className="text-sm text-gray-600">
-                  {reflection.studentName} про {reflection.relatedBiography?.fullName}
+        {/* About Project Section */}
+        <section className="py-16 bg-white border-t border-gray-200">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-8">Про проект</h2>
+
+            <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
+              <div>
+                <p className="text-lg text-gray-700 mb-4">
+                  КОРОТКО Для чого створений, хто веде, як працює ідтп
                 </p>
-              </Link>
-            ))}
+                <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
+                  Детальніше більше
+                </Button>
+              </div>
+              <div className="relative h-64 md:h-80 bg-gray-200 rounded-lg overflow-hidden">
+                {/* Placeholder for journalist image */}
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  <svg className="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
-      )}
 
-      {/* Posts (original content) */}
-      {posts.length > 0 && (
-        <section>
-          <h2 className="text-3xl font-bold mb-6">Пости</h2>
-          <ul className="flex flex-col gap-y-4">
-            {posts.map((post) => (
-              <li className="hover:underline" key={post._id}>
-                <Link href={`/${post.slug.current}`}>
-                  <h3 className="text-xl font-semibold">{post.title}</h3>
-                  <p className="text-gray-600">{new Date(post.publishedAt).toLocaleDateString()}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+        {/* Content Sections */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Biographies Section */}
+              <Link href="/biographies" className="group">
+                <Card className="overflow-hidden border-none shadow-none hover:shadow-lg transition-shadow">
+                  <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden mb-4">
+                    {featured.featuredBiographies && featured.featuredBiographies[0]?.photo ? (
+                      <Image
+                        src={urlFor(featured.featuredBiographies[0].photo).width(600).height(400).url()}
+                        alt="Біографії журналістів"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <svg className="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+                    Статті про журналістів
+                  </h3>
+                </Card>
+              </Link>
+
+              {/* Reflections Section */}
+              <Link href="/reflections" className="group">
+                <Card className="overflow-hidden border-none shadow-none hover:shadow-lg transition-shadow">
+                  <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden mb-4">
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <svg className="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+                    Рефлексії студентів
+                  </h3>
+                </Card>
+              </Link>
+            </div>
+          </div>
         </section>
-      )}
-    </main>
+
+        
+      </main>
+      <Footer />
+    </>
   );
 }
