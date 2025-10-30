@@ -6,7 +6,6 @@ import {PortableText} from '@portabletext/react'
 import type {PortableTextBlock} from '@portabletext/types'
 import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
-import {Button} from '@/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import {Separator} from '@/components/ui/separator'
 import {urlForImage} from '@/lib/sanityImage'
@@ -140,20 +139,6 @@ export default async function ProjectPage({params}: {params: Promise<{slug: stri
                 Контент проєкту готується до публікації.
               </div>
             )}
-
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div>
-                <p className="text-sm uppercase tracking-wide text-slate-500">
-                  Маєте ідею або дослідження?
-                </p>
-                <p className="text-base text-slate-700">
-                  Напишіть редакції та запропонуйте власний мультимедійний проєкт.
-                </p>
-              </div>
-              <Button variant="outline" className="border-slate-300 hover:bg-slate-100">
-                Запропонувати історію
-              </Button>
-            </div>
 
             <div className="pt-8">
               <Link href="/projects" className="text-sm font-medium text-blue-600 hover:underline">

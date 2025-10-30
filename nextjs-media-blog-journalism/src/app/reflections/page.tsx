@@ -45,18 +45,7 @@ export default async function ReflectionsPage() {
                 Есе та особисті роздуми студентів про спадщину українських журналістів. Слово як
                 спосіб зберегти досвід, передати емоції та знайти власну професійну позицію.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild size="lg" className="bg-rose-500 hover:bg-rose-400">
-                  <Link href="/biographies">Переглянути біографії</Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-slate-300 hover:bg-slate-100"
-                >
-                  Поділитися рефлексією
-                </Button>
-              </div>
+              <div className="mt-10 h-px w-full bg-slate-200" />
             </div>
             <Card className="border-rose-100 bg-gradient-to-br from-rose-50 via-white to-slate-50 shadow-lg">
               <CardHeader>

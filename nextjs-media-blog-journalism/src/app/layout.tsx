@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type {Metadata} from "next";
+import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
+
+import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Медіа Блог Журналістика",
+  title: "Спеціальність «Журналістика»",
   description: "Майбутнє, що говорить голосами минулого",
 };
 
@@ -24,10 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-slate-50 text-slate-900 antialiased`}>
+        <Header />
+        <div className="flex min-h-screen flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -48,18 +48,7 @@ export default async function ProjectsPage() {
                 Серії матеріалів, документальні історії, спецпроєкти та мультимедійні експерименти,
                 які створюють студенти спеціальності &laquo;Журналістика&raquo; разом із редакторами.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild size="lg" className="bg-slate-900 hover:bg-slate-700">
-                  <Link href="/reflections">Читати рефлексії команди</Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-slate-300 hover:bg-slate-100"
-                >
-                  Запропонувати проєкт
-                </Button>
-              </div>
+              <div className="mt-10 h-px w-full bg-slate-200" />
             </div>
             <Card className="border-slate-200 bg-slate-900 text-white shadow-xl">
               <CardHeader className="border-b border-white/10 pb-5">

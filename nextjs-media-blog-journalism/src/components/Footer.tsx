@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 export default function Footer() {
@@ -7,14 +8,14 @@ export default function Footer() {
         <div className="grid gap-10 border-b border-white/10 pb-12 md:grid-cols-[1.2fr_1fr_1fr]">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white">
-                <span className="text-sm font-semibold">МБЖ</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900">
+                <Image src="/images/logo.svg" alt="Логотип Спеціальність Журналістика" width={28} height={28} />
               </div>
-              <span className="text-lg font-semibold text-white">Медіа Блог Журналістика</span>
+              <span className="text-lg font-semibold text-white">Спеціальність &laquo;Журналістика&raquo;</span>
             </div>
             <p className="max-w-sm text-sm text-slate-400">
-              Освітня платформа факультету журналістики. Ми зберігаємо історії, рефлексії та великі
-              проєкти, створені студентами й викладачами.
+              Освітня платформа, що зберігає історії українських журналістів та підтримує студентські
+              дослідження і рефлексії.
             </p>
           </div>
 
@@ -50,7 +51,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-4 pt-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Медіа Блог Журналістика. Всі права захищені.</p>
+          <p>© {new Date().getFullYear()} Спеціальність &laquo;Журналістика&raquo;. Всі права захищені.</p>
           <div className="flex gap-4 text-xs uppercase tracking-wide">
             <Link href="#" className="hover:text-white">
               Політика конфіденційності

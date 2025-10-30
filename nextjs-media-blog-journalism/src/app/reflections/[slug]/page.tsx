@@ -147,20 +147,6 @@ export default async function ReflectionPage({params}: {params: Promise<{slug: s
           <div className="space-y-12">
             <PortableText value={reflection.essay} components={portableTextComponents} />
 
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div>
-                <p className="text-sm uppercase tracking-wide text-slate-500">
-                  Хочете поділитися власною історією?
-                </p>
-                <p className="text-base text-slate-700">
-                  Напишіть куратору курсу та долучіться до архіву студентських есе.
-                </p>
-              </div>
-              <Button variant="outline" className="border-slate-300 hover:bg-slate-100">
-                Зв&apos;язатися з редакцією
-              </Button>
-            </div>
-
             <div className="pt-8">
               <Link
                 href="/reflections"

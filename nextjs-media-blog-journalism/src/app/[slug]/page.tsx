@@ -4,7 +4,6 @@ import {PortableText} from '@portabletext/react'
 import type {PortableTextComponents} from '@portabletext/react'
 import type {SanityDocument} from 'next-sanity'
 
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import {urlForImage} from '@/lib/sanityImage'
 import {formatDate} from '@/lib/utils'
@@ -42,7 +41,6 @@ export default async function PostPage({params}: {params: Promise<{slug: string}
 
   return (
     <>
-      <Header />
       <main className="bg-slate-50 text-slate-900">
         <article className="container mx-auto max-w-4xl px-4 py-16">
           <Link href="/" className="text-sm text-slate-500 hover:text-slate-900">

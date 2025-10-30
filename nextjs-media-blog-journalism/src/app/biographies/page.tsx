@@ -47,14 +47,7 @@ export default async function BiographiesPage() {
                 працювали на передовій правди, зберігали факти та фіксували ключові моменти нашої
                 історії.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button size="lg" className="bg-blue-500 hover:bg-blue-400">
-                  Завантажити нову історію
-                </Button>
-                <Button size="lg" variant="outline" className="border-slate-300 hover:bg-slate-100">
-                  Зв&apos;язатися з редакцією
-                </Button>
-              </div>
+              <div className="mt-10 h-px w-full bg-slate-200" />
             </div>
             <Card className="border-slate-200 bg-slate-900 text-white shadow-xl">
               <CardHeader className="border-b border-white/10 pb-5">
