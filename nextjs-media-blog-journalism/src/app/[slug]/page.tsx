@@ -1,48 +1,87 @@
-import { PortableText, type SanityDocument } from "next-sanity";
-import imageUrlBuilder from "@sanity/image-url";
-import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { client } from "@/sanity/client";
-import Link from "next/link";
+import Image from 'next/image'
+import Link from 'next/link'
+import {PortableText} from '@portabletext/react'
+import type {PortableTextComponents} from '@portabletext/react'
+import type {SanityDocument} from 'next-sanity'
 
-const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`;
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import {urlForImage} from '@/lib/sanityImage'
+import {formatDate} from '@/lib/utils'
+import {client} from '@/sanity/client'
 
-const { projectId, dataset } = client.config();
-const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null;
+const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`
+const options = {next: {revalidate: 60}}
 
-const options = { next: { revalidate: 30 } };
+const portableTextComponents: PortableTextComponents = {
+  block: {
+    h2: ({children}) => <h2 className="mt-8 text-3xl font-semibold text-slate-900">{children}</h2>,
+    h3: ({children}) => <h3 className="mt-6 text-2xl font-semibold text-slate-900">{children}</h3>,
+    normal: ({children}) => <p className="text-base leading-relaxed text-slate-700">{children}</p>,
+    blockquote: ({children}) => (
+      <blockquote className="my-6 border-l-4 border-blue-300 bg-blue-50/60 px-6 py-4 text-lg italic text-slate-700">
+        {children}
+      </blockquote>
+    ),
+  },
+}
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const post = await client.fetch<SanityDocument>(POST_QUERY, await params, options);
-  const postImageUrl = post.image
-    ? urlFor(post.image)?.width(550).height(310).url()
-    : null;
+export default async function PostPage({params}: {params: Promise<{slug: string}>}) {
+  const {slug} = await params
+  const post = await client.fetch<SanityDocument | null>(POST_QUERY, {slug}, options)
+
+  if (!post) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-700">
+        <p>Матеріал не знайдено або ще не опубліковано.</p>
+      </main>
+    )
+  }
+
+  const postImage = post.image ? urlForImage(post.image)?.width(1280).height(720).fit('crop').url() : null
 
   return (
-    <main className="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-4">
-      <Link href="/" className="hover:underline">
-        ← Back to posts
-      </Link>
-      {postImageUrl && (
-        <img
-          src={postImageUrl}
-          alt={post.title}
-          className="aspect-video rounded-xl"
-          width="550"
-          height="310"
-        />
-      )}
-      <h1 className="text-4xl font-bold mb-8">{post.title}</h1>
-      <div className="prose">
-        <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
-        {Array.isArray(post.body) && <PortableText value={post.body} />}
-      </div>
-    </main>
-  );
+    <>
+      <Header />
+      <main className="bg-slate-50 text-slate-900">
+        <article className="container mx-auto max-w-4xl px-4 py-16">
+          <Link href="/" className="text-sm text-slate-500 hover:text-slate-900">
+            ← Повернутися на головну
+          </Link>
+
+          <h1 className="mt-6 text-4xl font-semibold leading-tight md:text-5xl">{post.title}</h1>
+
+          {post.publishedAt && (
+            <div className="mt-4 text-sm text-slate-500">
+              Опубліковано: {formatDate(post.publishedAt)}
+            </div>
+          )}
+
+          {postImage && (
+            <div className="relative mt-10 overflow-hidden rounded-3xl">
+              <Image
+                src={postImage}
+                alt={post.title}
+                width={1280}
+                height={720}
+                className="h-full w-full object-cover"
+                sizes="(min-width: 1280px) 800px, 100vw"
+              />
+            </div>
+          )}
+
+          <div className="mt-10 space-y-6">
+            {Array.isArray(post.body) ? (
+              <PortableText value={post.body} components={portableTextComponents} />
+            ) : (
+              <p className="rounded-3xl border border-slate-200 bg-white p-8 text-lg text-slate-600 shadow-sm">
+                Текст цього матеріалу готується до публікації.
+              </p>
+            )}
+          </div>
+        </article>
+      </main>
+      <Footer />
+    </>
+  )
 }

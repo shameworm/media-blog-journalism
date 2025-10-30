@@ -17,7 +17,7 @@ export const BIOGRAPHIES_QUERY = `*[_type == "biography" && status == "published
 }`
 
 // Отримати одну біографію за slug
-export const BIOGRAPHY_QUERY = `*[_type == "biography" && slug.current == $slug][0] {
+export const BIOGRAPHY_QUERY = `*[_type == "biography" && slug.current == $slug && status == "published"][0] {
   _id,
   _type,
   fullName,
@@ -41,7 +41,7 @@ export const BIOGRAPHY_QUERY = `*[_type == "biography" && slug.current == $slug]
 }`
 
 // Отримати всі біографії для генерації статичних сторінок
-export const BIOGRAPHY_SLUGS_QUERY = `*[_type == "biography" && defined(slug.current)] {
+export const BIOGRAPHY_SLUGS_QUERY = `*[_type == "biography" && defined(slug.current) && status == "published"] {
   "slug": slug.current
 }`
 
@@ -64,7 +64,7 @@ export const REFLECTIONS_QUERY = `*[_type == "reflection" && status == "publishe
 }`
 
 // Отримати одну рефлексію за slug
-export const REFLECTION_QUERY = `*[_type == "reflection" && slug.current == $slug][0] {
+export const REFLECTION_QUERY = `*[_type == "reflection" && slug.current == $slug && status == "published"][0] {
   _id,
   _type,
   title,
@@ -85,7 +85,7 @@ export const REFLECTION_QUERY = `*[_type == "reflection" && slug.current == $slu
 }`
 
 // Отримати всі рефлексії для генерації статичних сторінок
-export const REFLECTION_SLUGS_QUERY = `*[_type == "reflection" && defined(slug.current)] {
+export const REFLECTION_SLUGS_QUERY = `*[_type == "reflection" && defined(slug.current) && status == "published"] {
   "slug": slug.current
 }`
 
@@ -116,7 +116,7 @@ export const LARGE_PROJECTS_QUERY = `*[_type == "largeProject" && status == "pub
 }`
 
 // Отримати один проект за slug
-export const LARGE_PROJECT_QUERY = `*[_type == "largeProject" && slug.current == $slug][0] {
+export const LARGE_PROJECT_QUERY = `*[_type == "largeProject" && slug.current == $slug && status == "published"][0] {
   _id,
   _type,
   title,
@@ -131,7 +131,7 @@ export const LARGE_PROJECT_QUERY = `*[_type == "largeProject" && slug.current ==
 }`
 
 // Отримати всі проекти для генерації статичних сторінок
-export const LARGE_PROJECT_SLUGS_QUERY = `*[_type == "largeProject" && defined(slug.current)] {
+export const LARGE_PROJECT_SLUGS_QUERY = `*[_type == "largeProject" && defined(slug.current) && status == "published"] {
   "slug": slug.current
 }`
 

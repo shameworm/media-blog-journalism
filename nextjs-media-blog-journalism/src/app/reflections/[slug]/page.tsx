@@ -1,32 +1,52 @@
-import {client} from '@/sanity/client'
-import {REFLECTION_QUERY, REFLECTION_SLUGS_QUERY} from '@/sanity/queries'
-import imageUrlBuilder from '@sanity/image-url'
-import {PortableText} from '@portabletext/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {notFound} from 'next/navigation'
+import type {PortableTextComponents} from '@portabletext/react'
+import {PortableText} from '@portabletext/react'
+import type {PortableTextBlock} from '@portabletext/types'
+import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
-const builder = imageUrlBuilder(client)
+import {Button} from '@/components/ui/button'
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
+import {urlForImage} from '@/lib/sanityImage'
+import {formatDate} from '@/lib/utils'
+import {client} from '@/sanity/client'
+import {REFLECTION_QUERY, REFLECTION_SLUGS_QUERY} from '@/sanity/queries'
 
-function urlFor(source: any) {
-  return builder.image(source)
+interface ReflectionResponse {
+  _id: string
+  title: string
+  slug: {current: string}
+  studentName: string
+  studentEmail?: string
+  essay: PortableTextBlock[]
+  submittedAt?: string
+  grade?: string
+  relatedBiography?: {
+    _id: string
+    fullName: string
+    slug: {current: string}
+    photo?: SanityImageSource
+    birthDate?: string
+    deathDate?: string
+  }
 }
 
-const portableTextComponents = {
+const portableTextComponents: PortableTextComponents = {
   types: {
-    image: ({value}: any) => {
+    image: ({value}) => {
+      const imageUrl = urlForImage(value)?.width(1200).fit('max').url()
+      if (!imageUrl) {
+        return null
+      }
+
       return (
-        <figure className="my-6">
-          <div className="relative h-96 w-full">
-            <Image
-              src={urlFor(value).width(800).url()}
-              alt={value.alt || ''}
-              fill
-              className="object-contain"
-            />
+        <figure className="my-8 overflow-hidden rounded-3xl border border-rose-100 bg-white shadow-lg">
+          <div className="relative h-[400px] w-full">
+            <Image src={imageUrl} alt={value.alt || ''} fill className="object-contain" sizes="100vw" />
           </div>
           {value.caption && (
-            <figcaption className="text-center text-sm text-gray-600 mt-2">
+            <figcaption className="border-t border-rose-100 px-6 py-3 text-center text-sm text-slate-500">
               {value.caption}
             </figcaption>
           )}
@@ -35,119 +55,202 @@ const portableTextComponents = {
     },
   },
   block: {
-    h2: ({children}: any) => <h2 className="text-2xl font-bold mt-6 mb-3">{children}</h2>,
-    h3: ({children}: any) => <h3 className="text-xl font-bold mt-4 mb-2">{children}</h3>,
-    blockquote: ({children}: any) => (
-      <blockquote className="border-l-4 border-blue-300 pl-4 italic my-4 text-gray-700">
+    h2: ({children}) => (
+      <h2 className="mt-10 text-3xl font-semibold text-slate-900">
+        <span className="mb-2 block h-1 w-12 rounded-full bg-rose-400" />
+        {children}
+      </h2>
+    ),
+    h3: ({children}) => <h3 className="mt-8 text-2xl font-semibold text-slate-900">{children}</h3>,
+    blockquote: ({children}) => (
+      <blockquote className="my-6 border-l-4 border-rose-300 bg-rose-50/60 px-6 py-4 text-lg italic text-slate-700">
         {children}
       </blockquote>
     ),
+    normal: ({children}) => <p className="text-base leading-relaxed text-slate-700">{children}</p>,
   },
   marks: {
-    link: ({children, value}: any) => {
-      return (
-        <a href={value.href} className="text-blue-600 underline" target="_blank" rel="noopener">
-          {children}
-        </a>
-      )
-    },
+    link: ({children, value}) => (
+      <a href={value.href} className="text-rose-600 underline decoration-rose-200 hover:text-rose-500">
+        {children}
+      </a>
+    ),
   },
 }
 
 export async function generateStaticParams() {
-  try {
-    const slugs = await client.fetch(REFLECTION_SLUGS_QUERY)
-    return slugs.map((item: {slug: string}) => ({
-      slug: item.slug,
-    }))
-  } catch (error) {
-    console.error('Error fetching reflection slugs:', error)
-    return []
-  }
+  const slugs = await client.fetch<{slug: string}[]>(REFLECTION_SLUGS_QUERY)
+  return slugs.map((item) => ({
+    slug: item.slug,
+  }))
 }
 
 export const dynamicParams = true
 
-export default async function ReflectionPage(props: {params: Promise<{slug: string}>}) {
-  const params = await props.params
-  const reflection = await client.fetch(REFLECTION_QUERY, {slug: params.slug})
+export default async function ReflectionPage({params}: {params: Promise<{slug: string}>}) {
+  const {slug} = await params
+  const reflection = await client.fetch<ReflectionResponse | null>(REFLECTION_QUERY, {slug})
 
   if (!reflection) {
     notFound()
   }
 
+  const heroImageUrl = urlForImage(reflection.relatedBiography?.photo)
+    ?.width(1400)
+    .height(900)
+    .fit('crop')
+    .url()
+
   return (
-    <article className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* Хедер */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">{reflection.title}</h1>
-
-        <div className="flex items-center gap-4 text-gray-600 mb-6">
-          <p>
-            <span className="font-semibold">Автор:</span> {reflection.studentName}
-          </p>
-          <span>•</span>
-          <p>{new Date(reflection.submittedAt).toLocaleDateString('uk-UA')}</p>
-        </div>
-
-        {reflection.grade && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <p className="font-semibold text-green-800">Оцінка: {reflection.grade}</p>
-          </div>
+    <article className="bg-slate-50 text-slate-900">
+      <section className="relative overflow-hidden border-b border-rose-100">
+        {heroImageUrl && (
+          <Image
+            src={heroImageUrl}
+            alt={reflection.relatedBiography?.fullName ?? reflection.title}
+            fill
+            priority
+            className="object-cover opacity-60"
+            sizes="(min-width: 1280px) 80vw, 100vw"
+          />
         )}
-      </div>
-
-      {/* Інформація про журналіста */}
-      {reflection.relatedBiography && (
-        <div className="bg-gray-50 rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">Про кого це есе</h2>
-          <div className="flex items-center gap-4">
-            {reflection.relatedBiography.photo && (
-              <div className="relative w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
-                <Image
-                  src={urlFor(reflection.relatedBiography.photo).width(200).height(200).url()}
-                  alt={reflection.relatedBiography.fullName}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-900 via-rose-800/90 to-slate-900/85" />
+        <div className="relative container mx-auto px-4 py-24 md:py-28 text-white">
+          <Link href="/reflections" className="text-sm text-white/70 hover:text-white">
+            ← До всіх рефлексій
+          </Link>
+          <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-tight md:text-5xl">
+            {reflection.title}
+          </h1>
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-white/70">
+            <p>
+              Автор(ка): <span className="font-semibold text-white">{reflection.studentName}</span>
+            </p>
+            {reflection.submittedAt && (
+              <>
+                <span>•</span>
+                <p>{formatDate(reflection.submittedAt)}</p>
+              </>
             )}
-            <div>
-              <Link
-                href={`/biographies/${reflection.relatedBiography.slug.current}`}
-                className="text-xl font-semibold hover:text-blue-600"
-              >
-                {reflection.relatedBiography.fullName}
-              </Link>
-              {reflection.relatedBiography.birthDate && (
-                <p className="text-gray-600">
-                  {new Date(reflection.relatedBiography.birthDate).getFullYear()}
-                  {reflection.relatedBiography.deathDate &&
-                    ` - ${new Date(reflection.relatedBiography.deathDate).getFullYear()}`}
+            {reflection.grade && (
+              <>
+                <span>•</span>
+                <p>Оцінка редактора: {reflection.grade}</p>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
+          <div className="space-y-12">
+            <PortableText value={reflection.essay} components={portableTextComponents} />
+
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div>
+                <p className="text-sm uppercase tracking-wide text-slate-500">
+                  Хочете поділитися власною історією?
                 </p>
-              )}
+                <p className="text-base text-slate-700">
+                  Напишіть куратору курсу та долучіться до архіву студентських есе.
+                </p>
+              </div>
+              <Button variant="outline" className="border-slate-300 hover:bg-slate-100">
+                Зв&apos;язатися з редакцією
+              </Button>
+            </div>
+
+            <div className="pt-8">
               <Link
-                href={`/biographies/${reflection.relatedBiography.slug.current}`}
-                className="text-blue-600 text-sm hover:underline"
+                href="/reflections"
+                className="text-sm font-medium text-rose-600 hover:underline"
               >
-                Переглянути повну біографію →
+                ← Повернутися до всіх рефлексій
               </Link>
             </div>
           </div>
+
+          <aside className="space-y-8">
+            <Card className="border-rose-100 bg-rose-50/70 shadow-lg">
+              <CardHeader>
+                <CardDescription className="uppercase tracking-wide text-rose-500">
+                  Герой рефлексії
+                </CardDescription>
+                <CardTitle className="text-2xl text-slate-900">
+                  {reflection.relatedBiography?.fullName ?? 'Журналіст'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="relative h-48 w-full overflow-hidden rounded-2xl border border-rose-100 bg-white">
+                  {heroImageUrl ? (
+                    <Image
+                      src={heroImageUrl}
+                      alt={reflection.relatedBiography?.fullName ?? ''}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1280px) 340px, 100vw"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-slate-500">
+                      Фото відсутнє
+                    </div>
+                  )}
+                </div>
+                {reflection.relatedBiography && (
+                  <>
+                    <p className="text-sm text-slate-600">
+                      &laquo;{reflection.title}&raquo; присвячено досвіду та спадщині журналіста(ки){' '}
+                      {reflection.relatedBiography.fullName}.
+                    </p>
+                    <Button
+                      asChild
+                      size="sm"
+                      className="bg-rose-500 hover:bg-rose-400"
+                    >
+                      <Link href={`/biographies/${reflection.relatedBiography.slug.current}`}>
+                        Читати біографію
+                      </Link>
+                    </Button>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-slate-200 bg-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl text-slate-900">Про автора(ку)</CardTitle>
+                <CardDescription className="text-sm text-slate-500">
+                  Контактна інформація доступна редакторам курсу.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 text-sm text-slate-600">
+                <div>
+                  <p className="font-semibold text-slate-500">Ім&apos;я</p>
+                  <p className="text-base text-slate-900">{reflection.studentName}</p>
+                </div>
+                {reflection.studentEmail && (
+                  <div>
+                    <p className="font-semibold text-slate-500">Email</p>
+                    <a
+                      href={`mailto:${reflection.studentEmail}`}
+                      className="text-rose-600 hover:underline"
+                    >
+                      {reflection.studentEmail}
+                    </a>
+                  </div>
+                )}
+                {reflection.grade && (
+                  <div>
+                    <p className="font-semibold text-slate-500">Відгук редактора</p>
+                    <p className="text-base text-slate-900">{reflection.grade}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </aside>
         </div>
-      )}
-
-      {/* Текст есе */}
-      <div className="prose prose-lg max-w-none">
-        <PortableText value={reflection.essay} components={portableTextComponents} />
-      </div>
-
-      {/* Навігація */}
-      <div className="mt-12 pt-8 border-t">
-        <Link href="/reflections" className="text-blue-600 hover:underline">
-          ← Повернутися до всіх рефлексій
-        </Link>
-      </div>
+      </section>
     </article>
   )
 }

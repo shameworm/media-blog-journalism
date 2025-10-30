@@ -1,160 +1,222 @@
-import {client} from '@/sanity/client'
-import {LARGE_PROJECT_QUERY, LARGE_PROJECT_SLUGS_QUERY} from '@/sanity/queries'
-import imageUrlBuilder from '@sanity/image-url'
-import {PortableText} from '@portabletext/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {notFound} from 'next/navigation'
+import type {PortableTextComponents} from '@portabletext/react'
+import {PortableText} from '@portabletext/react'
+import type {PortableTextBlock} from '@portabletext/types'
+import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
-const builder = imageUrlBuilder(client)
+import {Button} from '@/components/ui/button'
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
+import {Separator} from '@/components/ui/separator'
+import {urlForImage} from '@/lib/sanityImage'
+import {formatDate} from '@/lib/utils'
+import {client} from '@/sanity/client'
+import {LARGE_PROJECT_QUERY, LARGE_PROJECT_SLUGS_QUERY} from '@/sanity/queries'
 
-function urlFor(source: any) {
-  return builder.image(source)
+interface LargeProjectResponse {
+  _id: string
+  title: string
+  slug: {current: string}
+  description?: string
+  coverImage?: SanityImageSource
+  content?: PortableTextBlock[]
+  startedAt?: string
+  completedAt?: string
+  collaborators: Array<{
+    name: string
+    role?: string
+    email?: string
+  }>
 }
 
-const portableTextComponents = {
+const portableTextComponents: PortableTextComponents = {
   types: {
-    image: ({value}: any) => {
+    image: ({value}) => {
+      const imageUrl = urlForImage(value)?.width(1400).fit('max').url()
+      if (!imageUrl) {
+        return null
+      }
+
       return (
-        <figure className="my-8">
-          <div className="relative h-96 w-full">
-            <Image
-              src={urlFor(value).width(1200).url()}
-              alt={value.alt || ''}
-              fill
-              className="object-contain"
-            />
+        <figure className="my-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
+          <div className="relative h-[440px] w-full">
+            <Image src={imageUrl} alt={value.alt || ''} fill className="object-contain" sizes="100vw" />
           </div>
-          {value.caption && (
-            <figcaption className="text-center text-sm text-gray-600 mt-2">
-              {value.caption}
+          {(value.caption || value.source) && (
+            <figcaption className="space-y-1 border-t border-slate-200 px-6 py-4 text-center text-sm text-slate-500">
+              {value.caption && <p>{value.caption}</p>}
+              {value.source && <p className="text-xs text-slate-400">Джерело: {value.source}</p>}
             </figcaption>
-          )}
-          {value.source && (
-            <p className="text-xs text-gray-500 text-center mt-1">Джерело: {value.source}</p>
           )}
         </figure>
       )
     },
   },
   block: {
-    h1: ({children}: any) => <h1 className="text-3xl font-bold mt-8 mb-4">{children}</h1>,
-    h2: ({children}: any) => <h2 className="text-2xl font-bold mt-6 mb-3">{children}</h2>,
-    h3: ({children}: any) => <h3 className="text-xl font-bold mt-4 mb-2">{children}</h3>,
-    blockquote: ({children}: any) => (
-      <blockquote className="border-l-4 border-gray-300 pl-4 italic my-4">{children}</blockquote>
+    h2: ({children}) => (
+      <h2 className="mt-12 text-3xl font-semibold text-slate-900">
+        <span className="mb-3 block h-1 w-16 rounded-full bg-slate-900/80" />
+        {children}
+      </h2>
     ),
+    h3: ({children}) => <h3 className="mt-8 text-2xl font-semibold text-slate-900">{children}</h3>,
+    blockquote: ({children}) => (
+      <blockquote className="my-6 border-l-4 border-blue-300 bg-blue-50/70 px-6 py-4 text-lg text-slate-700">
+        {children}
+      </blockquote>
+    ),
+    normal: ({children}) => <p className="text-base leading-relaxed text-slate-700">{children}</p>,
   },
   marks: {
-    link: ({children, value}: any) => {
-      return (
-        <a href={value.href} className="text-blue-600 underline" target="_blank" rel="noopener">
-          {children}
-        </a>
-      )
-    },
+    link: ({children, value}) => (
+      <a href={value.href} className="text-blue-600 underline decoration-blue-200 hover:text-blue-500">
+        {children}
+      </a>
+    ),
   },
 }
 
 export async function generateStaticParams() {
-  try {
-    const slugs = await client.fetch(LARGE_PROJECT_SLUGS_QUERY)
-    return slugs.map((item: {slug: string}) => ({
-      slug: item.slug,
-    }))
-  } catch (error) {
-    console.error('Error fetching project slugs:', error)
-    return []
-  }
+  const slugs = await client.fetch<{slug: string}[]>(LARGE_PROJECT_SLUGS_QUERY)
+  return slugs.map((item) => ({
+    slug: item.slug,
+  }))
 }
 
 export const dynamicParams = true
 
-export default async function ProjectPage(props: {params: Promise<{slug: string}>}) {
-  const params = await props.params
-  const project = await client.fetch(LARGE_PROJECT_QUERY, {slug: params.slug})
+export default async function ProjectPage({params}: {params: Promise<{slug: string}>}) {
+  const {slug} = await params
+  const project = await client.fetch<LargeProjectResponse | null>(LARGE_PROJECT_QUERY, {slug})
 
   if (!project) {
     notFound()
   }
 
+  const coverUrl = urlForImage(project.coverImage)?.width(1600).height(960).fit('crop').url()
+  const timeline = [
+    project.startedAt ? formatDate(project.startedAt, {month: 'long', year: 'numeric'}) : '',
+    project.completedAt ? formatDate(project.completedAt, {month: 'long', year: 'numeric'}) : '',
+  ]
+    .filter(Boolean)
+    .join(' — ')
+
   return (
-    <article className="container mx-auto px-4 py-8 max-w-5xl">
-      {/* Обкладинка проекту */}
-      {project.coverImage && (
-        <div className="relative h-96 w-full mb-8 rounded-lg overflow-hidden">
+    <article className="bg-slate-50 text-slate-900">
+      <section className="relative overflow-hidden border-b border-slate-200">
+        {coverUrl && (
           <Image
-            src={urlFor(project.coverImage).width(1400).height(600).url()}
+            src={coverUrl}
             alt={project.title}
             fill
-            className="object-cover"
+            priority
+            className="object-cover opacity-60"
+            sizes="(min-width: 1280px) 80vw, 100vw"
           />
-        </div>
-      )}
-
-      {/* Хедер */}
-      <header className="mb-8">
-        <h1 className="text-5xl font-bold mb-4">{project.title}</h1>
-
-        {project.description && (
-          <p className="text-xl text-gray-700 mb-6">{project.description}</p>
         )}
-
-        {/* Метаінформація */}
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-6">
-          {project.startedAt && (
-            <div>
-              <span className="font-semibold">Початок:</span>{' '}
-              {new Date(project.startedAt).toLocaleDateString('uk-UA')}
-            </div>
-          )}
-          {project.completedAt && (
-            <div>
-              <span className="font-semibold">Завершено:</span>{' '}
-              {new Date(project.completedAt).toLocaleDateString('uk-UA')}
-            </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900/90 to-slate-800/80" />
+        <div className="relative container mx-auto px-4 py-24 md:py-28 text-white">
+          <Link href="/projects" className="text-sm text-white/70 hover:text-white">
+            ← До переліку проєктів
+          </Link>
+          <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-tight md:text-5xl">
+            {project.title}
+          </h1>
+          {timeline && <p className="mt-4 text-lg text-white/70">{timeline}</p>}
+          {project.description && (
+            <p className="mt-6 max-w-3xl text-base text-white/75">{project.description}</p>
           )}
         </div>
+      </section>
 
-        {/* Співавтори */}
-        {project.collaborators && project.collaborators.length > 0 && (
-          <div className="bg-blue-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4">
-              Команда проекту ({project.collaborators.length})
-            </h2>
-            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-              {project.collaborators.map((collab: any, index: number) => (
-                <div key={index} className="bg-white rounded-lg p-3 border">
-                  <p className="font-semibold text-gray-900">{collab.name}</p>
-                  {collab.role && <p className="text-sm text-gray-600">{collab.role}</p>}
-                  {collab.email && (
-                    <a
-                      href={`mailto:${collab.email}`}
-                      className="text-xs text-blue-600 hover:underline"
-                    >
-                      {collab.email}
-                    </a>
-                  )}
-                </div>
-              ))}
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
+          <div className="space-y-12">
+            {project.content ? (
+              <PortableText value={project.content} components={portableTextComponents} />
+            ) : (
+              <div className="rounded-3xl border border-slate-200 bg-white p-10 text-lg text-slate-600 shadow-sm">
+                Контент проєкту готується до публікації.
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div>
+                <p className="text-sm uppercase tracking-wide text-slate-500">
+                  Маєте ідею або дослідження?
+                </p>
+                <p className="text-base text-slate-700">
+                  Напишіть редакції та запропонуйте власний мультимедійний проєкт.
+                </p>
+              </div>
+              <Button variant="outline" className="border-slate-300 hover:bg-slate-100">
+                Запропонувати історію
+              </Button>
+            </div>
+
+            <div className="pt-8">
+              <Link href="/projects" className="text-sm font-medium text-blue-600 hover:underline">
+                ← Повернутися до всіх проєктів
+              </Link>
             </div>
           </div>
-        )}
-      </header>
 
-      {/* Контент проекту */}
-      {project.content && (
-        <div className="prose prose-lg max-w-none">
-          <PortableText value={project.content} components={portableTextComponents} />
+          <aside className="space-y-8">
+            <Card className="border-slate-200 bg-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl text-slate-900">Команда проєкту</CardTitle>
+                <CardDescription className="text-sm text-slate-500">
+                  {project.collaborators.length} учасників
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {project.collaborators.map((person, index) => (
+                  <div
+                    key={`${person.name}-${index}`}
+                    className="rounded-2xl border border-slate-100 bg-slate-50 p-4"
+                  >
+                    <p className="text-base font-semibold text-slate-900">{person.name}</p>
+                    {person.role && <p className="text-sm text-slate-600">{person.role}</p>}
+                    {person.email && (
+                      <a href={`mailto:${person.email}`} className="text-xs text-blue-600 hover:underline">
+                        {person.email}
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {(project.startedAt || project.completedAt) && (
+              <Card className="border-slate-200 bg-blue-50/70 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg text-slate-900">Таймлайн</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-slate-600">
+                  {project.startedAt && (
+                    <div>
+                      <p className="font-semibold text-slate-500">Початок</p>
+                      <p className="text-base text-slate-900">
+                        {formatDate(project.startedAt, {day: 'numeric', month: 'long', year: 'numeric'})}
+                      </p>
+                    </div>
+                  )}
+                  <Separator className="bg-slate-200" />
+                  {project.completedAt && (
+                    <div>
+                      <p className="font-semibold text-slate-500">Завершення</p>
+                      <p className="text-base text-slate-900">
+                        {formatDate(project.completedAt, {day: 'numeric', month: 'long', year: 'numeric'})}
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </aside>
         </div>
-      )}
-
-      {/* Навігація */}
-      <div className="mt-12 pt-8 border-t">
-        <Link href="/projects" className="text-blue-600 hover:underline">
-          ← Повернутися до всіх проектів
-        </Link>
-      </div>
+      </section>
     </article>
   )
 }
