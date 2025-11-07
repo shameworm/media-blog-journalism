@@ -53,10 +53,20 @@ interface StatsData {
 const options = {next: {revalidate: 60}}
 
 export default async function IndexPage() {
-  const [featured, stats] = await Promise.all([
-    client.fetch<HomepageData>(HOMEPAGE_QUERY, {}, options),
-    client.fetch<StatsData>(STATS_QUERY, {}, options),
-  ])
+  let featured: HomepageData | null = null
+  let stats: StatsData | null = null
+
+  try {
+    const [featuredData, statsData] = await Promise.all([
+      client.fetch<HomepageData>(HOMEPAGE_QUERY, {}, options),
+      client.fetch<StatsData>(STATS_QUERY, {}, options),
+    ])
+    featured = featuredData
+    stats = statsData
+  } catch (error) {
+    console.error('Error fetching homepage data:', error)
+    // Continue with null values - the page will render with empty arrays
+  }
 
   const featuredBiographies = featured?.featuredBiographies ?? []
   const recentReflections = featured?.recentReflections ?? []

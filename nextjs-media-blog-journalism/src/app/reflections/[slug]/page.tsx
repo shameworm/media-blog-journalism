@@ -79,17 +79,29 @@ const portableTextComponents: PortableTextComponents = {
 }
 
 export async function generateStaticParams() {
-  const slugs = await client.fetch<{slug: string}[]>(REFLECTION_SLUGS_QUERY)
-  return slugs.map((item) => ({
-    slug: item.slug,
-  }))
+  try {
+    const slugs = await client.fetch<{slug: string}[]>(REFLECTION_SLUGS_QUERY)
+    return slugs.map((item) => ({
+      slug: item.slug,
+    }))
+  } catch (error) {
+    console.error('Error generating static params for reflections:', error)
+    return []
+  }
 }
 
 export const dynamicParams = true
 
 export default async function ReflectionPage({params}: {params: Promise<{slug: string}>}) {
   const {slug} = await params
-  const reflection = await client.fetch<ReflectionResponse | null>(REFLECTION_QUERY, {slug})
+  let reflection: ReflectionResponse | null = null
+  
+  try {
+    reflection = await client.fetch<ReflectionResponse | null>(REFLECTION_QUERY, {slug})
+  } catch (error) {
+    console.error('Error fetching reflection:', error)
+    notFound()
+  }
 
   if (!reflection) {
     notFound()

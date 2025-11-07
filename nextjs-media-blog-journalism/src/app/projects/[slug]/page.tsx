@@ -77,17 +77,29 @@ const portableTextComponents: PortableTextComponents = {
 }
 
 export async function generateStaticParams() {
-  const slugs = await client.fetch<{slug: string}[]>(LARGE_PROJECT_SLUGS_QUERY)
-  return slugs.map((item) => ({
-    slug: item.slug,
-  }))
+  try {
+    const slugs = await client.fetch<{slug: string}[]>(LARGE_PROJECT_SLUGS_QUERY)
+    return slugs.map((item) => ({
+      slug: item.slug,
+    }))
+  } catch (error) {
+    console.error('Error generating static params for projects:', error)
+    return []
+  }
 }
 
 export const dynamicParams = true
 
 export default async function ProjectPage({params}: {params: Promise<{slug: string}>}) {
   const {slug} = await params
-  const project = await client.fetch<LargeProjectResponse | null>(LARGE_PROJECT_QUERY, {slug})
+  let project: LargeProjectResponse | null = null
+  
+  try {
+    project = await client.fetch<LargeProjectResponse | null>(LARGE_PROJECT_QUERY, {slug})
+  } catch (error) {
+    console.error('Error fetching project:', error)
+    notFound()
+  }
 
   if (!project) {
     notFound()

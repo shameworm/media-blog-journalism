@@ -11,6 +11,9 @@ import {formatDate} from '@/lib/utils'
 import {client} from '@/sanity/client'
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`
+const POST_SLUGS_QUERY = `*[_type == "post" && defined(slug.current)] {
+  "slug": slug.current
+}`
 const options = {next: {revalidate: 60}}
 
 const portableTextComponents: PortableTextComponents = {
@@ -26,9 +29,30 @@ const portableTextComponents: PortableTextComponents = {
   },
 }
 
+export async function generateStaticParams() {
+  try {
+    const slugs = await client.fetch<{slug: string}[]>(POST_SLUGS_QUERY, {}, options)
+    return slugs.map((item) => ({
+      slug: item.slug,
+    }))
+  } catch (error) {
+    console.error('Error generating static params for posts:', error)
+    return []
+  }
+}
+
+export const dynamicParams = true
+
 export default async function PostPage({params}: {params: Promise<{slug: string}>}) {
   const {slug} = await params
-  const post = await client.fetch<SanityDocument | null>(POST_QUERY, {slug}, options)
+  let post: SanityDocument | null = null
+  
+  try {
+    post = await client.fetch<SanityDocument | null>(POST_QUERY, {slug}, options)
+  } catch (error) {
+    console.error('Error fetching post:', error)
+    notFound()
+  }
 
   if (!post) {
     notFound()

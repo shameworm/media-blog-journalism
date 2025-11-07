@@ -26,7 +26,15 @@ interface Reflection {
 export const revalidate = 60
 
 export default async function ReflectionsPage() {
-  const reflections = await client.fetch<Reflection[]>(REFLECTIONS_QUERY)
+  let reflections: Reflection[] = []
+  
+  try {
+    reflections = await client.fetch<Reflection[]>(REFLECTIONS_QUERY)
+  } catch (error) {
+    console.error('Error fetching reflections:', error)
+    // Continue with empty array - page will render with empty state
+  }
+  
   const [featured, ...others] = reflections
 
   return (

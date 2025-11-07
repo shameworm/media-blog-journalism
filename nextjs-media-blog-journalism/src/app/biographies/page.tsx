@@ -24,7 +24,15 @@ interface Biography {
 export const revalidate = 60
 
 export default async function BiographiesPage() {
-  const biographies = await client.fetch<Biography[]>(BIOGRAPHIES_QUERY)
+  let biographies: Biography[] = []
+  
+  try {
+    biographies = await client.fetch<Biography[]>(BIOGRAPHIES_QUERY)
+  } catch (error) {
+    console.error('Error fetching biographies:', error)
+    // Continue with empty array - page will render with empty state
+  }
+  
   const [featured, ...others] = biographies
   const featuredImageUrl = featured
     ? urlForImage(featured.photo)?.width(960).height(720).fit('crop').url()

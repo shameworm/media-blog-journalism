@@ -26,7 +26,15 @@ interface LargeProject {
 export const revalidate = 60
 
 export default async function ProjectsPage() {
-  const projects = await client.fetch<LargeProject[]>(LARGE_PROJECTS_QUERY)
+  let projects: LargeProject[] = []
+  
+  try {
+    projects = await client.fetch<LargeProject[]>(LARGE_PROJECTS_QUERY)
+  } catch (error) {
+    console.error('Error fetching projects:', error)
+    // Continue with empty array - page will render with empty state
+  }
+  
   const [featured, ...others] = projects
   const featuredCoverUrl = featured
     ? urlForImage(featured.coverImage)?.width(1000).height(640).fit('crop').url()

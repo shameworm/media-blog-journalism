@@ -12,8 +12,15 @@ interface TeamMember {
 const options = {next: {revalidate: 60}}
 
 export default async function AboutPage() {
-  const team = await client.fetch<TeamMember[]>(TEAM_MEMBERS_QUERY, {}, options)
-  const teamMembers = team ?? []
+  let teamMembers: TeamMember[] = []
+  
+  try {
+    const team = await client.fetch<TeamMember[]>(TEAM_MEMBERS_QUERY, {}, options)
+    teamMembers = team ?? []
+  } catch (error) {
+    console.error('Error fetching team members:', error)
+    // Continue with empty array - page will render with empty state
+  }
 
   return (
     <>

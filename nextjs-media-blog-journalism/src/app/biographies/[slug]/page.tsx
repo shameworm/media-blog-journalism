@@ -112,18 +112,29 @@ const portableTextComponents: PortableTextComponents = {
 }
 
 export async function generateStaticParams() {
-  const slugs = await client.fetch<{slug: string}[]>(BIOGRAPHY_SLUGS_QUERY)
-
-  return slugs.map((item) => ({
-    slug: item.slug,
-  }))
+  try {
+    const slugs = await client.fetch<{slug: string}[]>(BIOGRAPHY_SLUGS_QUERY)
+    return slugs.map((item) => ({
+      slug: item.slug,
+    }))
+  } catch (error) {
+    console.error('Error generating static params for biographies:', error)
+    return []
+  }
 }
 
 export const dynamicParams = true
 
 export default async function BiographyPage({params}: {params: Promise<{slug: string}>}) {
   const {slug} = await params
-  const biography = await client.fetch<BiographyResponse | null>(BIOGRAPHY_QUERY, {slug})
+  let biography: BiographyResponse | null = null
+  
+  try {
+    biography = await client.fetch<BiographyResponse | null>(BIOGRAPHY_QUERY, {slug})
+  } catch (error) {
+    console.error('Error fetching biography:', error)
+    notFound()
+  }
 
   if (!biography) {
     notFound()
