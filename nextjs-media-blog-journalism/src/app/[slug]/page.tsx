@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import {notFound} from 'next/navigation'
 import {PortableText} from '@portabletext/react'
 import type {PortableTextComponents} from '@portabletext/react'
 import type {SanityDocument} from 'next-sanity'
@@ -30,11 +31,7 @@ export default async function PostPage({params}: {params: Promise<{slug: string}
   const post = await client.fetch<SanityDocument | null>(POST_QUERY, {slug}, options)
 
   if (!post) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-700">
-        <p>Матеріал не знайдено або ще не опубліковано.</p>
-      </main>
-    )
+    notFound()
   }
 
   const postImage = post.image ? urlForImage(post.image)?.width(1280).height(720).fit('crop').url() : null

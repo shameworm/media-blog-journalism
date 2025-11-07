@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd nextjs-media-blog-journalism && npm run build",
-  "outputDirectory": "nextjs-media-blog-journalism/.next",
-  "installCommand": "cd nextjs-media-blog-journalism && npm install"
-}
