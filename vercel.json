@@ -1,15 +1,5 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "builds": [
-    {
-      "src": "nextjs-media-blog-journalism/next.config.ts",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "nextjs-media-blog-journalism/$1"
-    }
-  ]
+  "buildCommand": "cd nextjs-media-blog-journalism && npm run build",
+  "outputDirectory": "nextjs-media-blog-journalism/.next",
+  "installCommand": "cd nextjs-media-blog-journalism && npm install"
 }
