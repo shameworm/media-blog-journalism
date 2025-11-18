@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
+import Footer from '@/components/Footer'
 import {Button} from '@/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import {urlForImage} from '@/lib/sanityImage'
@@ -39,16 +40,17 @@ export default async function BiographiesPage() {
     : null
 
   return (
+    <>
     <main className="bg-slate-50 text-slate-900">
       <section className="border-b border-slate-200 bg-white">
         <div className="container mx-auto px-4 py-16 md:py-20">
           <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-end">
             <div>
               <span className="inline-flex items-center rounded-full bg-blue-50 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700">
-                Архів української журналістики
+                Пам&apos;ять про журналістів
               </span>
               <h1 className="mt-6 text-4xl font-semibold leading-tight md:text-5xl">
-                Біографії журналістів та журналісток України
+                Присвячено загиблим журналістам, пам&apos;ять про яких ми зберігаємо.
               </h1>
               <p className="mt-4 text-lg text-slate-600 md:max-w-2xl">
                 Відкривайте історії людей, які творили український інформаційний простір. Вони
@@ -193,5 +195,7 @@ export default async function BiographiesPage() {
         </div>
       </section>
     </main>
+    <Footer />
+    </>
   )
 }

@@ -6,6 +6,7 @@ import {PortableText} from '@portabletext/react'
 import type {PortableTextBlock} from '@portabletext/types'
 import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
+import Footer from '@/components/Footer'
 import {Button} from '@/components/ui/button'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {Separator} from '@/components/ui/separator'
@@ -166,6 +167,7 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
   ].filter((item) => item.value)
 
   return (
+    <>
     <article className="bg-slate-50 text-slate-900">
       <section className="relative overflow-hidden border-b border-slate-200">
         {heroImageUrl && (
@@ -339,5 +341,7 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
         </div>
       </section>
     </article>
+    <Footer />
+    </>
   )
 }
