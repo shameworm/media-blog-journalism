@@ -147,7 +147,7 @@ export default async function IndexPage() {
                   Спеціальність Журналістика
                 </span>
                 <h1 className="mt-8 text-4xl font-bold leading-tight md:text-6xl">
-                  Українська журналістика: пам&apos;ять, досвід, натхнення
+                  Майбутнє, що говорить голосами минулого
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg text-white/75 md:text-xl">
                   Ми збираємо голоси тих, хто формував інформаційний фронт України, та ділимось
