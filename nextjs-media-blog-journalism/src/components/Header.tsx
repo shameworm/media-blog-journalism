@@ -11,9 +11,8 @@ export default function Header() {
           <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white">
             <Image src="/images/logo.svg" alt="Логотип Спеціальність Журналістика" width={28} height={28} />
           </div>
-          <div className="hidden flex-col leading-tight md:flex">
-            <span className="text-xs uppercase tracking-wide text-slate-500">Спільнота</span>
-            <span className="text-sm font-semibold text-slate-900">Спеціальність &laquo;Журналістика&raquo;</span>
+          <div className="hidden md:flex">
+            <span className="text-lg font-bold text-slate-900">Спеціальність &laquo;Журналістика&raquo;</span>
           </div>
         </Link>
 
