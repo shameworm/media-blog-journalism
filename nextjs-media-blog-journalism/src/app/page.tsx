@@ -241,11 +241,10 @@ export default async function IndexPage() {
                   <div>
                     <p className="text-sm uppercase tracking-wide text-blue-600">Добірка редакції</p>
                     <CardTitle className="mt-2 text-3xl font-semibold text-slate-900">
-                      Стежте за історіями журналістів
+                      Документування професії через пам&apos;ять
                     </CardTitle>
                     <CardDescription className="mt-3 text-base text-slate-600">
-                      Від перших розслідувань до останніх матеріалів – знайомтесь із героями
-                      українського медіапростору, дізнавайтесь про їхню освіту, досвід та визнання.
+                      Життя загиблих журналістів стає основою для студентських матеріалів, що поєднують пам&apos;ять і професійний аналіз. Кожна історія допомагає глибше зрозуміти професію та її значення у сучасному медіапросторі.
                     </CardDescription>
                   </div>
                   <div className="flex flex-wrap gap-3">
