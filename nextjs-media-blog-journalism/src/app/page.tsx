@@ -82,7 +82,7 @@ export default async function IndexPage() {
     {
       label: 'Біографії',
       value: stats?.publishedBiographies ?? 0,
-      description: 'Документуємо життя українських журналістів',
+      description: 'Історії загиблих внаслідок війни журналістів',
     },
     {
       label: 'Рефлексії',
