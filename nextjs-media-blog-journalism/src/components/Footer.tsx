@@ -50,6 +50,38 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="border-b border-white/10 py-8">
+          <div className="flex flex-col items-center gap-4 md:flex-row md:justify-center">
+            <a
+              href="https://hneu.edu.ua/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition hover:opacity-80"
+            >
+              <Image
+                src="/images/partnership_logo.JPG"
+                alt="Харківський національний економічний університет імені Семена Кузнеця"
+                width={80}
+                height={80}
+                className="rounded-full"
+              />
+            </a>
+            <div className="text-center md:text-left">
+              <p className="text-sm text-slate-400">
+                Медіапроєкт створено за підтримки:{' '}
+                <a
+                  href="https://hneu.edu.ua/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-blue-400 transition"
+                >
+                  Маркетингового відділу ХНЕУ ім. С. Кузнеця
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-4 pt-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
           <p>© {new Date().getFullYear()} Спеціальність &laquo;Журналістика&raquo;. Всі права захищені.</p>
           <div className="flex gap-4 text-xs uppercase tracking-wide">
