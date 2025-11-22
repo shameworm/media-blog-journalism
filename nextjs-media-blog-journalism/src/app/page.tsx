@@ -150,8 +150,7 @@ export default async function IndexPage() {
                   Майбутнє, що говорить голосами минулого
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg text-white/75 md:text-xl">
-                  Ми збираємо голоси тих, хто формував інформаційний фронт України, та ділимось
-                  рефлексіями молодих журналістів, що продовжують цю справу сьогодні.
+                  Ми збираємо голоси тих, хто формував український медіапростір, та ділимось рефлексіями молодих журналістів, що продовжують цю справу сьогодні.
                 </p>
                 <div className="mt-10 flex flex-wrap gap-4">
                   <Button
@@ -319,10 +318,10 @@ export default async function IndexPage() {
                   <div>
                     <p className="text-sm uppercase tracking-wide text-blue-600">Погляд студентів</p>
                     <CardTitle className="mt-2 text-2xl text-slate-900">
-                      Останні рефлексії та есе
+                      Останні рефлексії студентів
                     </CardTitle>
                     <CardDescription className="mt-3 text-sm text-slate-600">
-                      Відкрийте для себе, як молоді журналісти осмислюють спадщину своїх героїв.
+                      Відкрийте для себе, як молоді журналісти осмислюють спадщину своїх колег.
                     </CardDescription>
                   </div>
                 </CardHeader>
@@ -437,10 +436,9 @@ export default async function IndexPage() {
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="text-3xl font-semibold text-slate-900">Великі мультимедійні проєкти</h2>
+                <h2 className="text-3xl font-semibold text-slate-900">Мультимедійні матеріали</h2>
                 <p className="mt-2 max-w-2xl text-base text-slate-600">
-                  Глибокі дослідження, документальні історії та креативні формати, створені студентами
-                  у співпраці з редакторами.
+                  Дослідження суспільно важливої тематики, створені студентами у співпраці з редакторами.
                 </p>
               </div>
               <Button asChild>

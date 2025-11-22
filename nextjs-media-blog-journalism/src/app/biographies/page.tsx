@@ -50,12 +50,10 @@ export default async function BiographiesPage() {
                 Пам&apos;ять про журналістів
               </span>
               <h1 className="mt-6 text-4xl font-semibold leading-tight md:text-5xl">
-                Присвячено загиблим журналістам, пам&apos;ять про яких ми зберігаємо.
+                Присвячено загиблим журналістам, пам&apos;ять про яких ми зберігаємо
               </h1>
               <p className="mt-4 text-lg text-slate-600 md:max-w-2xl">
-                Відкривайте історії людей, які творили український інформаційний простір. Вони
-                працювали на передовій правди, зберігали факти та фіксували ключові моменти нашої
-                історії.
+                Відкривайте історії людей, які формували український медіапростір. Вони працювали там, де народжується правда, зберігали факти та фіксували ключові моменти нашої історії.
               </p>
               <div className="mt-10 h-px w-full bg-slate-200" />
             </div>
@@ -65,8 +63,7 @@ export default async function BiographiesPage() {
                 <CardTitle className="text-3xl font-semibold">{biographies.length}</CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4 pt-6 text-sm text-white/70">
-                <p>Публікуємо лише перевірені та погоджені матеріали.</p>
-                <p>Використовуйте як ресурс для навчання, журналістських розслідувань та досліджень.</p>
+                <p>Посилаємось на перевірені джерела. Використовуємо для навчання та досліджень.</p>
               </CardContent>
             </Card>
           </div>

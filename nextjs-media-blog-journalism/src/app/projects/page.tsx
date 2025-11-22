@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
+import Footer from '@/components/Footer'
 import {Button} from '@/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import {urlForImage} from '@/lib/sanityImage'
@@ -41,13 +42,14 @@ export default async function ProjectsPage() {
     : null
 
   return (
+    <>
     <main className="bg-slate-50 text-slate-900">
       <section className="border-b border-slate-200 bg-white">
         <div className="container mx-auto px-4 py-16 md:py-20">
           <div className="grid gap-10 md:grid-cols-[1.1fr_0.9fr] md:items-center">
             <div>
               <span className="inline-flex items-center rounded-full bg-slate-900 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                Великі мультимедійні проєкти
+                Мультимедійні проєкти
               </span>
               <h1 className="mt-6 text-4xl font-semibold leading-tight md:text-5xl">
                 Командні дослідження студентів та викладачів
@@ -65,7 +67,7 @@ export default async function ProjectsPage() {
               </CardHeader>
               <CardContent className="grid gap-4 pt-6 text-sm text-white/70">
                 <p>Кожен проєкт містить факти, фото, інтерв&apos;ю та мультимедійні матеріали.</p>
-                <p>Ми публікуємо лише перевірені та завершені історії, які пройшли редакційний аудит.</p>
+                <p>Посилаємось на перевірені джерела. Використовуємо для навчання та досліджень.</p>
               </CardContent>
             </Card>
           </div>
@@ -225,5 +227,7 @@ export default async function ProjectsPage() {
         )}
       </section>
     </main>
+    <Footer />
+    </>
   )
 }

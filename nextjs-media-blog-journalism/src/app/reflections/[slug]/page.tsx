@@ -6,6 +6,7 @@ import {PortableText} from '@portabletext/react'
 import type {PortableTextBlock} from '@portabletext/types'
 import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
+import Footer from '@/components/Footer'
 import {Button} from '@/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import {urlForImage} from '@/lib/sanityImage'
@@ -114,6 +115,7 @@ export default async function ReflectionPage({params}: {params: Promise<{slug: s
     .url()
 
   return (
+    <>
     <article className="bg-slate-50 text-slate-900">
       <section className="relative overflow-hidden border-b border-rose-100">
         {heroImageUrl && (
@@ -237,23 +239,27 @@ export default async function ReflectionPage({params}: {params: Promise<{slug: s
           </div>
 
           {/* Main Essay Content */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
-            <h2 className="mb-6 text-2xl font-semibold">Рефлексія</h2>
-            <div className="prose prose-slate max-w-none">
-              <PortableText value={reflection.essay} components={portableTextComponents} />
-            </div>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
+              <h2 className="mb-6 text-2xl font-semibold">Рефлексія</h2>
+              <div className="prose prose-slate max-w-none">
+                <PortableText value={reflection.essay} components={portableTextComponents} />
+              </div>
 
-            <div className="mt-8 pt-8 border-t border-slate-200">
-              <Link
-                href="/reflections"
-                className="text-sm font-medium text-rose-600 hover:underline"
-              >
-                ← Повернутися до всіх рефлексій
-              </Link>
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <Link
+                  href="/reflections"
+                  className="text-sm font-medium text-rose-600 hover:underline"
+                >
+                  ← Повернутися до всіх рефлексій
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
     </article>
+    <Footer />
+    </>
   )
 }

@@ -14,7 +14,7 @@ export default function Footer() {
               <span className="text-lg font-semibold text-white">Спеціальність &laquo;Журналістика&raquo;</span>
             </div>
             <p className="max-w-sm text-sm text-slate-400">
-              Освітня платформа, що зберігає історії українських журналістів та підтримує студентські
+              Освітня платформа, що зберігає історії журналістів та підтримує студентські
               дослідження і рефлексії.
             </p>
           </div>

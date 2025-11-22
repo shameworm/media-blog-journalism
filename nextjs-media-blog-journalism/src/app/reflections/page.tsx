@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 
+import Footer from '@/components/Footer'
 import {Button} from '@/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import {urlForImage} from '@/lib/sanityImage'
@@ -38,6 +39,7 @@ export default async function ReflectionsPage() {
   const [featured, ...others] = reflections
 
   return (
+    <>
     <main className="bg-slate-50 text-slate-900">
       <section className="border-b border-slate-200 bg-white">
         <div className="container mx-auto px-4 py-16 md:py-20">
@@ -50,7 +52,7 @@ export default async function ReflectionsPage() {
                 Рефлексії про журналістику та суспільну пам&apos;ять
               </h1>
               <p className="mt-4 text-lg text-slate-600 md:max-w-3xl">
-                Есе та особисті роздуми студентів про спадщину українських журналістів. Слово як
+                Публіцистичні матеріали та особисті роздуми студентів про спадщину українських журналістів. Слово як
                 спосіб зберегти досвід, передати емоції та знайти власну професійну позицію.
               </p>
               <div className="mt-10 h-px w-full bg-slate-200" />
@@ -63,7 +65,7 @@ export default async function ReflectionsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-slate-600">
-                Кожне есе проходить редакційну вичитку та публікується після погодження з куратором
+                Кожен публіцистичний матеріал проходить редакційну вичитку та публікується після погодження з куратором
                 проєкту. Ми зберігаємо авторський стиль та голос студента.
               </CardContent>
             </Card>
@@ -218,5 +220,7 @@ export default async function ReflectionsPage() {
         )}
       </section>
     </main>
+    <Footer />
+    </>
   )
 }
