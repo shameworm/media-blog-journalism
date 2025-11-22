@@ -1,24 +1,28 @@
-import Footer from '@/components/Footer'
-import {Separator} from '@/components/ui/separator'
-import {client} from '@/sanity/client'
-import {TEAM_MEMBERS_QUERY} from '@/sanity/queries'
+import Footer from "@/components/Footer";
+import { Separator } from "@/components/ui/separator";
+import { client } from "@/sanity/client";
+import { TEAM_MEMBERS_QUERY } from "@/sanity/queries";
 
 interface TeamMember {
-  _id: string
-  fullName: string
-  role?: string
+  _id: string;
+  fullName: string;
+  role?: string;
 }
 
-const options = {next: {revalidate: 60}}
+const options = { next: { revalidate: 60 } };
 
 export default async function AboutPage() {
-  let teamMembers: TeamMember[] = []
-  
+  let teamMembers: TeamMember[] = [];
+
   try {
-    const team = await client.fetch<TeamMember[]>(TEAM_MEMBERS_QUERY, {}, options)
-    teamMembers = team ?? []
+    const team = await client.fetch<TeamMember[]>(
+      TEAM_MEMBERS_QUERY,
+      {},
+      options
+    );
+    teamMembers = team ?? [];
   } catch (error) {
-    console.error('Error fetching team members:', error)
+    console.error("Error fetching team members:", error);
     // Continue with empty array - page will render with empty state
   }
 
@@ -38,7 +42,8 @@ export default async function AboutPage() {
                 Про проєкт
               </h1>
               <p className="mt-6 max-w-2xl text-lg text-white/75 md:text-xl">
-                Дізнайтеся більше про нашу місію, цілі та команду, що працює над збереженням історії української журналістики.
+                Дізнайтеся більше про нашу місію, цілі та команду, що працює над
+                збереженням історії української журналістики.
               </p>
             </div>
           </div>
@@ -48,17 +53,66 @@ export default async function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="grid gap-10 md:grid-cols-[1.1fr_0.9fr]">
               <div className="space-y-6">
-                <h2 className="text-3xl font-semibold md:text-4xl">Наша місія</h2>
+                <h2 className="text-3xl font-semibold md:text-4xl">
+                  Місія та цінності проєкту
+                </h2>
                 <p className="text-base text-white/70">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi
-                  tristique senectus et netus et malesuada fames ac turpis egestas. Sed euismod, urna
-                  non tempus commodo, lorem nulla facilisis neque, vitae tempus sapien ipsum vitae sem.
+                  Наш медіапроєкт більший за джерело інформації. Це інтегрована
+                  платформа, що поєднує освіту, актуальну журналістику та
+                  збереження пам'яті.
                 </p>
-                <p className="text-base text-white/70">
-                  Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac
-                  diam sit amet quam vehicula elementum sed sit amet dui. Cras ultricies ligula sed
-                  magna dictum porta.
-                </p>
+
+                <div className="pt-4">
+                  <h3 className="text-2xl font-semibold">
+                    Наша триєдина місія
+                  </h3>
+                  <Separator className="my-4 bg-white/20" />
+                  <p className="text-base text-white/70 mb-4">
+                    Місія проєкту ґрунтується на поєднанні трьох ключових
+                    аспектів: освітнього, інформаційного та меморіального.
+                  </p>
+
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-lg font-semibold text-blue-400 mb-2">
+                        Освітній аспект
+                      </h4>
+                      <p className="text-base text-white/70">
+                        Наша мета — продемонструвати особливості роботи в
+                        журналістиці, сприяючи розвитку аналітичних навичок та
+                        критичного мислення у студентів і студентів, які
+                        опановують цей фах. Ми сподіваємося, що проєкт
+                        перетвориться на живий майданчик, де теорія
+                        перетворюється на реальний досвід.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-blue-400 mb-2">
+                        Інформаційний аспект
+                      </h4>
+                      <p className="text-base text-white/70">
+                        Ми забезпечуємо доступ до реальних прикладів професійної
+                        журналістики, висвітлюючи її актуальні виклики та
+                        стандарти. Ми прагнемо бути джерелом якісного та
+                        релевантного контенту.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-blue-400 mb-2">
+                        Меморіальна складова
+                      </h4>
+                      <p className="text-base text-white/70">
+                        Ця частина спрямована на збереження пам'яті про
+                        журналістів, які загинули внаслідок війни. Ми інтегруємо
+                        їхній досвід у навчальний процес як цінне джерело знань,
+                        осмислення професії та приклад незламності для нового
+                        покоління медіафахівців.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="pt-6">
                   <h3 className="text-2xl font-semibold">Наші цілі</h3>
@@ -66,19 +120,73 @@ export default async function AboutPage() {
                   <ul className="space-y-4 text-white/70">
                     <li className="flex gap-3">
                       <span className="text-blue-400">•</span>
-                      <span>Зберігати та популяризувати історії українських журналістів</span>
+                      <span>
+                        Зберігати та популяризувати історії загиблих в наслідок
+                        війни журналістів
+                      </span>
                     </li>
                     <li className="flex gap-3">
                       <span className="text-blue-400">•</span>
-                      <span>Надихати студентів на глибоке осмислення професійної етики та відповідальності</span>
+                      <span>
+                        Надихати студентів на глибоке осмислення професійної
+                        етики та відповідальності
+                      </span>
                     </li>
                     <li className="flex gap-3">
                       <span className="text-blue-400">•</span>
-                      <span>Створювати платформу для обміну знаннями між поколіннями журналістів</span>
+                      <span>
+                        Створювати платформу для обміну знаннями між поколіннями
+                        журналістів
+                      </span>
                     </li>
                     <li className="flex gap-3">
                       <span className="text-blue-400">•</span>
-                      <span>Розвивати мультимедійні навички студентів через практичні проєкти</span>
+                      <span>
+                        Розвивати мультимедійні навички студентів через
+                        практічні проєкти
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="pt-6">
+                  <h3 className="text-2xl font-semibold">
+                    Партнерство: Відділ маркетингу ХНЕУ ім. С. Кузнеця
+                  </h3>
+                  <Separator className="my-4 bg-white/20" />
+                  <p className="text-base text-white/70 mb-4">
+                    Проєкт реалізовано за стратегічної підтримки маркетингового
+                    відділу Харківського національного економічного університету
+                    імені Семена Кузнеця (ХНЕУ ім. С. Кузнеця).
+                  </p>
+                  <p className="text-base text-white/70 mb-4">
+                    Це партнерство є ключовим для:
+                  </p>
+                  <ul className="space-y-4 text-white/70">
+                    <li className="flex gap-3">
+                      <span className="text-blue-400">•</span>
+                      <div>
+                        <span className="font-semibold text-white">
+                          Практичної реалізації студентів:
+                        </span>{" "}
+                        Проєкт слугує реальним професійним майданчиком для
+                        студентів і студенток спеціальності 061 "Журналістика",
+                        де вони здобувають цінні професійні навички.
+                      </div>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="text-blue-400">•</span>
+                      <div>
+                        <span className="font-semibold text-white">
+                          Підсилення іміджу університету:
+                        </span>{" "}
+                        Створення такого якісного та соціально значущого
+                        медіапродукту зміцнює позитивний імідж ХНЕУ ім. С.
+                        Кузнеця як прогресивного закладу, що готує
+                        висококваліфікованих, соціально відповідальних фахівців
+                        і фахівчинь, підтримує інноваційні ініціативи
+                        студенства.
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -87,7 +195,8 @@ export default async function AboutPage() {
               <div className="rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur">
                 <h3 className="text-xl font-semibold">Команда</h3>
                 <p className="mt-2 text-sm text-white/70">
-                  Студенти, викладачі та редактори, які щодня працюють над новим контентом.
+                  Студенти, викладачі та редактори, які щодня працюють над новим
+                  контентом.
                 </p>
                 <Separator className="my-6 bg-white/20" />
                 <div className="space-y-4">
@@ -98,20 +207,25 @@ export default async function AboutPage() {
                     >
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/30 text-sm font-semibold text-white">
                         {member.fullName
-                          .split(' ')
+                          .split(" ")
                           .map((part) => part[0])
-                          .join('')
+                          .join("")
                           .slice(0, 2)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-white">{member.fullName}</p>
-                        {member.role && <p className="text-xs text-white/60">{member.role}</p>}
+                        <p className="text-sm font-semibold text-white">
+                          {member.fullName}
+                        </p>
+                        {member.role && (
+                          <p className="text-xs text-white/60">{member.role}</p>
+                        )}
                       </div>
                     </div>
                   ))}
                   {teamMembers.length === 0 && (
                     <p className="text-sm text-white/70">
-                      Дані про команду з&apos;являться після публікації учасників у Sanity Studio.
+                      Дані про команду з&apos;являться після публікації
+                      учасників у Sanity Studio.
                     </p>
                   )}
                 </div>
@@ -122,5 +236,5 @@ export default async function AboutPage() {
       </main>
       <Footer />
     </>
-  )
+  );
 }
