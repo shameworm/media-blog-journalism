@@ -181,15 +181,15 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900/90 to-slate-800/80" />
-        <div className="relative container mx-auto px-4 py-24 md:py-28">
+        <div className="relative container mx-auto px-4 py-12 md:py-24">
           <div className="max-w-4xl text-white">
             <Link href="/biographies" className="text-sm text-white/70 hover:text-white">
               ← До каталогу біографій
             </Link>
-            <h1 className="mt-6 text-4xl font-semibold leading-tight md:text-5xl">
+            <h1 className="mt-6 text-3xl font-semibold leading-tight md:text-4xl lg:text-5xl">
               {biography.fullName}
             </h1>
-            {lifetime && <p className="mt-3 text-lg text-white/70">{lifetime}</p>}
+            {lifetime && <p className="mt-3 text-base text-white/70 md:text-lg">{lifetime}</p>}
           </div>
         </div>
       </section>
@@ -197,10 +197,10 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
       <section className="container mx-auto px-4 py-16">
         <div className="space-y-12">
           {/* Key Facts Section - Image on left, facts on right */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
-            <h2 className="mb-6 text-2xl font-bold text-slate-900">Ключові факти</h2>
+          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-lg md:p-8">
+            <h2 className="mb-6 text-xl font-bold text-slate-900 md:text-2xl">Ключові факти</h2>
             <div className="flex flex-col gap-8 md:flex-row md:items-start">
-              <div className="h-64 w-full flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-md md:h-80 md:w-80">
+              <div className="h-48 w-full flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-md md:h-80 md:w-80">
                 {biography.photo ? (
                   <Image
                     src={
@@ -222,17 +222,17 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
                 {keyFacts.map((fact) => (
                   <div key={fact.label} className="rounded-lg border border-slate-100 bg-slate-50 p-4">
                     <dt className="mb-2 text-xs font-bold uppercase tracking-wide text-blue-600">{fact.label}</dt>
-                    <dd className="text-lg font-semibold text-slate-900">{fact.value}</dd>
+                    <dd className="text-base font-semibold text-slate-900 md:text-lg">{fact.value}</dd>
                   </div>
                 ))}
               </dl>
             </div>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
-            <div className="space-y-8">
+          <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)]">
+            <div className="min-w-0 space-y-8">
               {/* Education and Professional Path together */}
-              <div className="grid gap-8 md:grid-cols-2">
+              <div className="grid min-w-0 gap-8 md:grid-cols-2">
                 {biography.education && biography.education.length > 0 && (
                   <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
                     <h2 className="text-xl font-semibold">Освіта</h2>
@@ -271,13 +271,13 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
               </div>
 
               {/* Main Biography Text */}
-              <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
-                <h2 className="mb-6 text-2xl font-semibold">Біографія</h2>
-                <div className="prose prose-slate max-w-none">
+              <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-lg md:p-8">
+                <h2 className="mb-6 text-xl font-semibold md:text-2xl">Біографія</h2>
+                <div className="prose prose-sm prose-slate max-w-none md:prose-base">
                   {biography.biography ? (
                     <PortableText value={biography.biography} components={portableTextComponents} />
                   ) : (
-                    <p className="text-lg text-slate-600">
+                    <p className="text-base text-slate-600 md:text-lg">
                       Повна біографія готується до публікації.
                     </p>
                   )}
@@ -309,7 +309,7 @@ export default async function BiographyPage({params}: {params: Promise<{slug: st
               )}
             </div>
 
-            <aside className="space-y-8">
+            <aside className="min-w-0 space-y-8">
               {biography.relatedReflections && biography.relatedReflections.length > 0 && (
                 <div className="rounded-3xl border border-blue-100 bg-blue-50/70 p-8 shadow-lg">
                   <h2 className="text-xl font-semibold text-slate-900">Рефлексії студентів</h2>
