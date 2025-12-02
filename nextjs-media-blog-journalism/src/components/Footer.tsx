@@ -99,7 +99,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="text-white hover:text-blue-400 transition"
                 >
-                  Маркетингового відділу ХНЕУ ім. С. Кузнеця
+                  Відділ маркетингу та корпоративних комунікацій ХНЕУ ім. С. Кузнеця
                 </a>
               </p>
             </div>
