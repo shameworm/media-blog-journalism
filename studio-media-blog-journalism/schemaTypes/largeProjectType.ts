@@ -54,16 +54,24 @@ export const largeProjectType = defineType({
           type: 'object',
           fields: [
             {
+              name: 'teamMemberRef',
+              title: 'Член Команди',
+              type: 'reference',
+              to: [{type: 'teamMember'}],
+              description: 'Оберіть члена команди або заповніть поля нижче для зовнішнього співавтора',
+            },
+            {
               name: 'name',
-              title: 'Ім\'я',
+              title: 'Ім\'я (Зовнішній)',
               type: 'string',
-              validation: (Rule) => Rule.required(),
+              hidden: ({parent}) => !!parent?.teamMemberRef,
             },
             {
               name: 'email',
-              title: 'Email',
+              title: 'Email (Зовнішній)',
               type: 'string',
               validation: (Rule) => Rule.email(),
+              hidden: ({parent}) => !!parent?.teamMemberRef,
             },
             {
               name: 'role',
@@ -74,8 +82,15 @@ export const largeProjectType = defineType({
           ],
           preview: {
             select: {
-              title: 'name',
-              subtitle: 'role',
+              teamMember: 'teamMemberRef.fullName',
+              externalName: 'name',
+              role: 'role',
+            },
+            prepare({teamMember, externalName, role}) {
+              return {
+                title: teamMember || externalName || 'Без імені',
+                subtitle: role || 'Без ролі',
+              }
             },
           },
         },

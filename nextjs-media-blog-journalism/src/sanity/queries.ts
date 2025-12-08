@@ -149,6 +149,50 @@ export const TEAM_MEMBERS_QUERY = `*[_type == "teamMember"] | order(fullName asc
   socialLinks
 }`
 
+// Отримати пов'язаний контент для члена команди
+export const TEAM_MEMBER_RELATED_CONTENT_QUERY = `{
+  "biographies": *[
+    _type == "biography" &&
+    (
+      references($teamMemberId) ||
+      assignedEditor == $teamMemberName ||
+      assignedChiefEditor == $teamMemberName
+    ) &&
+    status == "published"
+  ] | order(_createdAt desc) [0...10] {
+    _id,
+    fullName,
+    slug,
+    photo
+  },
+  "reflections": *[
+    _type == "reflection" &&
+    (
+      references($teamMemberId) ||
+      studentName == $teamMemberName
+    ) &&
+    status == "published"
+  ] | order(submittedAt desc) [0...10] {
+    _id,
+    title,
+    slug,
+    relatedBiography->{fullName, slug}
+  },
+  "projects": *[
+    _type == "largeProject" &&
+    (
+      references($teamMemberId) ||
+      $teamMemberName in collaborators[].name
+    ) &&
+    status == "published"
+  ] | order(completedAt desc) [0...10] {
+    _id,
+    title,
+    slug,
+    coverImage
+  }
+}`
+
 // ==================== СТАТИСТИКА ====================
 
 // Отримати статистику по всіх типах

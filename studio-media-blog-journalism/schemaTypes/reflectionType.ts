@@ -22,17 +22,36 @@ export const reflectionType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'studentRef',
+      title: 'Студент (Команда)',
+      type: 'reference',
+      to: [{type: 'teamMember'}],
+      options: {
+        filter: 'role == "journalist" || role == "editor"',
+      },
+      description: 'Оберіть студента з команди або заповніть ім\'я нижче',
+    }),
+    defineField({
       name: 'studentName',
-      title: 'Ім\'я Студента',
+      title: 'Ім\'я Студента (Текст)',
       type: 'string',
-      validation: (Rule) => Rule.required(),
-      description: 'Повне ім\'я студента, який написав есе',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const doc = context.document as any
+          if (!doc?.studentRef && !value) {
+            return 'Вкажіть студента з команди або введіть ім\'я'
+          }
+          return true
+        }),
+      description: 'Повне ім\'я студента, який написав есе (для студентів поза командою)',
+      hidden: ({document}) => !!document?.studentRef,
     }),
     defineField({
       name: 'studentEmail',
       title: 'Email Студента',
       type: 'string',
       validation: (Rule) => Rule.email(),
+      hidden: ({document}) => !!document?.studentRef,
     }),
     defineField({
       name: 'relatedBiography',

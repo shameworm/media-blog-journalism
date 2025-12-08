@@ -30,7 +30,17 @@ export const teamMemberType = defineType({
       name: 'role',
       title: 'Роль',
       type: 'string',
-      description: 'Наприклад: Головний редактор, Журналіст, Фотограф',
+      options: {
+        list: [
+          {title: 'Головний редактор', value: 'main_editor'},
+          {title: 'Журналіст', value: 'journalist'},
+          {title: 'Фотограф', value: 'photographer'},
+          {title: 'Редактор', value: 'editor'},
+          {title: 'Дизайнер', value: 'designer'},
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+      description: 'Оберіть роль члена команди. Головний редактор показується першим.',
     }),
     defineField({
       name: 'email',

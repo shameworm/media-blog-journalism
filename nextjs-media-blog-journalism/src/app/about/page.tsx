@@ -1,12 +1,24 @@
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
+import { TeamSection } from "@/components/TeamSection";
 import { client } from "@/sanity/client";
 import { TEAM_MEMBERS_QUERY } from "@/sanity/queries";
+import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
+
+interface SocialLink {
+  platform: string;
+  url: string;
+}
 
 interface TeamMember {
   _id: string;
   fullName: string;
   role?: string;
+  photo?: SanityImageSource;
+  email?: string;
+  phone?: string;
+  bio?: string;
+  socialLinks?: SocialLink[];
 }
 
 const options = { next: { revalidate: 60 } };
@@ -30,8 +42,8 @@ export default async function AboutPage() {
     <>
       <main className="bg-slate-950 text-white">
         <section className="relative overflow-hidden border-b border-white/10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.35),_transparent_65%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,_rgba(3,7,18,0.95)_0%,_rgba(12,23,44,0.95)_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.35),transparent_65%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(3,7,18,0.95)_0%,rgba(12,23,44,0.95)_100%)]" />
 
           <div className="relative container mx-auto px-4 py-24 md:py-28">
             <div className="max-w-4xl">
@@ -59,7 +71,7 @@ export default async function AboutPage() {
                 <p className="text-base text-white/70">
                   Наш медіапроєкт більший за джерело інформації. Це інтегрована
                   платформа, що поєднує освіту, актуальну журналістику та
-                  збереження пам'яті.
+                  збереження пам&apos;яті.
                 </p>
 
                 <div className="pt-4">
@@ -104,7 +116,7 @@ export default async function AboutPage() {
                         Меморіальна складова
                       </h4>
                       <p className="text-base text-white/70">
-                        Ця частина спрямована на збереження пам'яті про
+                        Ця частина спрямована на збереження пам&apos;яті про
                         журналістів, які загинули внаслідок війни. Ми інтегруємо
                         їхній досвід у навчальний процес як цінне джерело знань,
                         осмислення професії та приклад незламності для нового
@@ -170,7 +182,7 @@ export default async function AboutPage() {
                           Практичної реалізації студентів:
                         </span>{" "}
                         Проєкт слугує реальним професійним майданчиком для
-                        студентів і студенток спеціальності 061 "Журналістика",
+                        студентів і студенток спеціальності 061 &quot;Журналістика&quot;,
                         де вони здобувають цінні професійні навички.
                       </div>
                     </li>
@@ -192,44 +204,7 @@ export default async function AboutPage() {
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur">
-                <h3 className="text-xl font-semibold">Команда</h3>
-                <p className="mt-2 text-sm text-white/70">
-                  Студенти, викладачі та редактори, які щодня працюють над новим
-                  контентом.
-                </p>
-                <Separator className="my-6 bg-white/20" />
-                <div className="space-y-4">
-                  {teamMembers.slice(0, 6).map((member) => (
-                    <div
-                      key={member._id}
-                      className="flex items-center gap-4 rounded-2xl border border-white/20 bg-white/5 p-4 transition hover:bg-white/10"
-                    >
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/30 text-sm font-semibold text-white">
-                        {member.fullName
-                          .split(" ")
-                          .map((part) => part[0])
-                          .join("")
-                          .slice(0, 2)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-white">
-                          {member.fullName}
-                        </p>
-                        {member.role && (
-                          <p className="text-xs text-white/60">{member.role}</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  {teamMembers.length === 0 && (
-                    <p className="text-sm text-white/70">
-                      Дані про команду з&apos;являться після публікації
-                      учасників у Sanity Studio.
-                    </p>
-                  )}
-                </div>
-              </div>
+              <TeamSection teamMembers={teamMembers} />
             </div>
           </div>
         </section>
