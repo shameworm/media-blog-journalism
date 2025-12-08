@@ -199,7 +199,7 @@ export const HOMEPAGE_QUERY = `{
     title,
     slug,
     studentName,
-    relatedBiography->{fullName, slug}
+    relatedBiography->{fullName, slug, photo}
   },
   "featuredProjects": *[_type == "largeProject" && status == "published"] | order(completedAt desc)[0...2] {
     _id,

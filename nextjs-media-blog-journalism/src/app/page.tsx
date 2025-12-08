@@ -32,6 +32,7 @@ interface HomepageData {
     relatedBiography?: {
       fullName: string
       slug: SanitySlug
+      photo?: SanityImageSource
     }
   }>
   featuredProjects: Array<{
@@ -109,10 +110,7 @@ export default async function IndexPage() {
       title: reflection.title,
       subtitle: `Рефлексія • ${reflection.studentName}`,
       href: `/reflections/${reflection.slug.current}`,
-      image:
-        featuredBiographies.find(
-          (bio) => bio.slug.current === reflection.relatedBiography?.slug.current,
-        )?.photo ?? null,
+      image: reflection.relatedBiography?.photo ?? null,
     })),
     ...featuredProjects.map((project) => ({
       id: `${project._id}-project`,
